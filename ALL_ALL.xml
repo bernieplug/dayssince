@@ -1,3 +1,4 @@
 <messagebundle>
-  <msg name="add">Add</msg> 
+  <msg name="Add">Add</msg> 
+  <msg name="dayssince">days since</msg> 
 </messagebundle>
