@@ -23,6 +23,7 @@
 	<Require feature="analytics"/>
 	<Require feature="dynamic-height"/>
 	<Require feature="setprefs"/>
+	<Require feature="minimessage"/>
 </ModulePrefs>
 <UserPref name="reminders" datatype="hidden" default_value=""></UserPref>
 <Content type="html">
@@ -40,19 +41,23 @@
 	var years = days*365;
 		
 	function onLoad__MODULE_ID__() {
-	  prefs__MODULE_ID__ = new _IG_Prefs(__MODULE_ID__);
-	  var reminders = prefs__MODULE_ID__.getString("reminders");
-	  if (reminders == "")
-	    reminders__MODULE_ID__ = {"array":[]};
-	  else
-	    reminders__MODULE_ID__ = reminders.parseJSON();
-	  createTable__MODULE_ID__();
+		prefs__MODULE_ID__ = new _IG_Prefs(__MODULE_ID__);
+		var reminders = prefs__MODULE_ID__.getString("reminders");
+		var msg = new _IG_MiniMessage(__MODULE_ID__);
+		
+		if (reminders == "")
+			reminders__MODULE_ID__ = {"array":[]};
+		else
+			reminders__MODULE_ID__ = reminders.parseJSON();
+			
+		msg.createTimerMessage("reminders:" + reminders, 5);
+		createTable__MODULE_ID__();
 	}
 	
 	_IG_RegisterOnloadHandler(onLoad__MODULE_ID__);
 
 	function saveReminders__MODULE_ID__(){
-		prefs__MODULE_ID__.set("reminders", reminders__MODULE_ID__.array.toJSONString());
+		prefs__MODULE_ID__.set("reminders", reminders__MODULE_ID__.toJSONString());
 		_gel("newReminderInput__MODULE_ID__").focus();
 	}
 
@@ -186,10 +191,10 @@
 		border: 0;
 		margin: 0 10px;
 	}
+	
 	img.reset__MODULE_ID__ {
 		border: 0;
-		margin: 0 10px;
-		
+		margin: 0 10px;	
 	}
 	
 </style>
