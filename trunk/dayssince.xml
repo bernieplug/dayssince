@@ -23,7 +23,6 @@
 	<Require feature="analytics"/>
 	<Require feature="dynamic-height"/>
 	<Require feature="setprefs"/>
-	<Require feature="minimessage"/>
 </ModulePrefs>
 <UserPref name="reminders" datatype="hidden" default_value=""></UserPref>
 <Content type="html">
@@ -43,27 +42,25 @@
 	function onLoad__MODULE_ID__() {
 		prefs__MODULE_ID__ = new _IG_Prefs(__MODULE_ID__);
 		var reminders = prefs__MODULE_ID__.getString("reminders");
-		var msg = new _IG_MiniMessage(__MODULE_ID__);
-		
+				
 		if (reminders == "")
 			reminders__MODULE_ID__ = {"array":[]};
 		else
 			reminders__MODULE_ID__ = reminders.parseJSON();
 			
-		msg.createTimerMessage("reminders:" + reminders, 5);
 		createTable__MODULE_ID__();
 	}
 	
 	_IG_RegisterOnloadHandler(onLoad__MODULE_ID__);
 
 	function saveReminders__MODULE_ID__(){
-		prefs__MODULE_ID__.set("reminders", reminders__MODULE_ID__.toJSONString());
-		_gel("newReminderInput__MODULE_ID__").focus();
+		prefs__MODULE_ID__.set("reminders", reminders__MODULE_ID__.array.toJSONString());
 	}
 
-	function addReminder__MODULE_ID__(description, daysago) {
+	function addReminder__MODULE_ID__(description, daysago_string) {
 		var description = _trim(description);
 		var date = new Date();
+		var daysago = parseInt(daysago_string);
 		
 		date.setDate(date.getDate()-daysago);
 		
@@ -81,6 +78,7 @@
 		var beginning = reminders__MODULE_ID__.array.slice(0, number);
 		var end = reminders__MODULE_ID__.array.slice(number + 1,
 		                                      reminders__MODULE_ID__.array.length);
+		
 		reminders__MODULE_ID__.array = beginning.concat(end);
 		createTable__MODULE_ID__();
 		saveReminders__MODULE_ID__();
@@ -120,6 +118,7 @@
 		html = html + "</table>";
 		_gel("remindersDiv__MODULE_ID__").innerHTML = html;
 		_IG_AdjustIFrameHeight();
+		_gel("newReminderInput__MODULE_ID__").focus();
 	}
 
 	function createRow__MODULE_ID__(number, description, lastreset) {
@@ -129,11 +128,11 @@
 		var html =
 			"<tr id=\"row" + number + "__MODULE_ID__\"" +
 			rowClass__MODULE_ID__(number) + ">" +
-			"<td class=dayssince_ds__MODULE_ID__>" + 
+			"<td class=dayssince_ds__MODULE_ID__><span class=dayssince_ds__MODULE_ID__>" + 
 			Math.floor(dayssince) +
-			"</td>" +
+			"</span></td>" +
 			"<td class=description_td__MODULE_ID__>" +
-			escape(description) +
+			_hesc(description) +
 			"</td>" +
 			"<td>" +
 			createReset__MODULE_ID__(number) +
@@ -178,48 +177,63 @@
 
 <style type="text/css">
 	
-	td.dayssince_ds__MODULE_ID__ {
-		border-size: thin;
+	td.description_td__MODULE_ID__ {
+		width: 100%;
+		margin: 0 0 0 30px;
+		text-align: center;
+	}
+	
+	span.dayssince_ds__MODULE_ID__ {
+		border: thick solid #00008B;
 		padding: 10px;
-		margin: 0 20px;
 		background-color: #00BFFF;
 		color: #00008B;
 		font-size: x-large;
+		margin: 0 20px 0 0;
 	}
 	
 	img.delete__MODULE_ID__ {
 		border: 0;
-		margin: 0 10px;
+		margin: 0;
 	}
 	
 	img.reset__MODULE_ID__ {
 		border: 0;
-		margin: 0 10px;	
+		margin: 0;	
+		width: 48px;
 	}
 	
 </style>
 
-  <form name = "newReminderForm__MODULE_ID__"
-        onsubmit="return addReminder__MODULE_ID__(
-                 document.newReminderForm__MODULE_ID__.
-                 newReminderInput__MODULE_ID__.value, 0)">
-    <table cellspacing=0>
-      <tr>
-      <td style='width:100%' >
-        <input id="newReminderInput__MODULE_ID__" type="text"
-               style='width:100%'>
-      </td>
-      <td>
-        <input type = "button" value="__MSG_add__"
-               onclick = "javascript:addReminder__MODULE_ID__(
-                         document.newReminderForm__MODULE_ID__.
-                         newReminderInput__MODULE_ID__.value,
-						 0)">
-      </td>
-    </tr>
-  </table>
-  <div id="remindersDiv__MODULE_ID__"></div>
-  </form>
+<form name = "newReminderForm__MODULE_ID__"
+	onsubmit="return addReminder__MODULE_ID__(
+	document.newReminderForm__MODULE_ID__.
+	newReminderInput__MODULE_ID__.value,
+	document.newReminderForm__MODULE_ID__.
+	newDaysSinceInput__MODULE_ID__.value)">
+	<table cellspacing=0>
+		<tr>
+			<td class="newDaysSinceTd__MODULE_ID__">
+				<input size="4" id="newDaysSinceInput__MODULE_ID__" 
+					value="0" type="text">
+			</td>
+			<td style='width:100%' >
+				<input id="newReminderInput__MODULE_ID__" type="text"
+						style='width:100%'>
+			</td>
+			<td>
+				<input type="image" alt="__MSG_add__"
+							src="http://dayssince.googlecode.com/svn/trunk/add.gif"
+							onclick = "javascript:addReminder__MODULE_ID__(
+							document.newReminderForm__MODULE_ID__.
+							newReminderInput__MODULE_ID__.value,
+							document.newReminderForm__MODULE_ID__.
+							newDaysSinceInput__MODULE_ID__.value)">
+			</td>
+		</tr>
+	</table>
+	<div id="remindersDiv__MODULE_ID__"></div>
+</form>
 
 ]]>
 </Content>
