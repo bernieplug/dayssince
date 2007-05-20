@@ -23,6 +23,7 @@
 	<Require feature="dynamic-height"/>
 	<Require feature="setprefs"/>
 </ModulePrefs>
+<Locale messages="http://dayssince.googlecode.com/svn/trunk/ALL_ALL.xml"/>
 <UserPref name="reminders" datatype="hidden" default_value=""></UserPref>
 <Content type="html">
 <![CDATA[
@@ -152,7 +153,7 @@
 	function createReset__MODULE_ID__(number) {
 		var html =
 			"<a href=\"javascript:resetReminder__MODULE_ID__(" + number + ")\">" +
-			"<img class=delete__MODULE_ID__" +
+			"<img class=reset__MODULE_ID__" +
 			" src=\"http://dayssince.googlecode.com/svn/trunk/reset.gif\">" +
 			"</a>";
 		return html;
@@ -169,6 +170,29 @@
 	_IG_Analytics("UA-99119-12", "/dayssince");
 	
 </script>
+
+<style type="text/css">
+	
+	td.dayssince_ds__MODULE_ID__ {
+		border-size: thin;
+		padding: 10px;
+		margin: 0 20px;
+		background-color: #00BFFF;
+		color: #00008B;
+		font-size: x-large;
+	}
+	
+	img.delete__MODULE_ID__ {
+		border: 0;
+		margin: 0 10px;
+	}
+	img.reset__MODULE_ID__ {
+		border: 0;
+		margin: 0 10px;
+		
+	}
+	
+</style>
 
   <form name = "newReminderForm__MODULE_ID__"
         onsubmit="return addReminder__MODULE_ID__(
