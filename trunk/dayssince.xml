@@ -23,6 +23,7 @@
 	<Require feature="analytics"/>
 	<Require feature="dynamic-height"/>
 	<Require feature="setprefs"/>
+	<Require feature="minimessage"/>
 </ModulePrefs>
 <UserPref name="reminders" datatype="hidden" default_value=""></UserPref>
 <Content type="html">
@@ -67,8 +68,10 @@
 		_gel("newReminderInput__MODULE_ID__").value = "";
 		if (description == "")
 			return;
+			
 		reminders__MODULE_ID__.array[reminders__MODULE_ID__.array.length] =
 			{"description": description, "lastreset": date };
+			
 		createTable__MODULE_ID__();
 		saveReminders__MODULE_ID__();
 		return false;
@@ -116,6 +119,8 @@
 		}
 		
 		html = html + "</table>";
+		var msg = new _IG_MiniMessage(__MODULE_ID__);
+		msg.createDismissibleMessage(html);
 		_gel("remindersDiv__MODULE_ID__").innerHTML = html;
 		_IG_AdjustIFrameHeight();
 		_gel("newReminderInput__MODULE_ID__").focus();
@@ -213,7 +218,7 @@
 	newDaysSinceInput__MODULE_ID__.value)">
 	<table cellspacing=0>
 		<tr>
-			<td class="newDaysSinceTd__MODULE_ID__">
+			<td>
 				<input size="4" id="newDaysSinceInput__MODULE_ID__" 
 					value="0" type="text">
 			</td>
@@ -222,8 +227,8 @@
 						style='width:100%'>
 			</td>
 			<td>
-				<input type="image" alt="__MSG_add__"
-							src="http://dayssince.googlecode.com/svn/trunk/add.gif"
+				<input type='image' alt="__MSG_add__"
+							src='http://dayssince.googlecode.com/svn/trunk/add.gif'
 							onclick = "javascript:addReminder__MODULE_ID__(
 							document.newReminderForm__MODULE_ID__.
 							newReminderInput__MODULE_ID__.value,
