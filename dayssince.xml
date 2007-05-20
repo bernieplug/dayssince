@@ -19,11 +19,11 @@
 	height="150"
 	scrolling = "true"
 >
+	<Locale messages="http://dayssince.googlecode.com/svn/trunk/ALL_ALL.xml"/>
 	<Require feature="analytics"/>
 	<Require feature="dynamic-height"/>
 	<Require feature="setprefs"/>
 </ModulePrefs>
-<Locale messages="http://dayssince.googlecode.com/svn/trunk/ALL_ALL.xml"/>
 <UserPref name="reminders" datatype="hidden" default_value=""></UserPref>
 <Content type="html">
 <![CDATA[
