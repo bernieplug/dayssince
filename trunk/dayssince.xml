@@ -119,8 +119,6 @@
 		}
 		
 		html = html + "</table>";
-		var msg = new _IG_MiniMessage(__MODULE_ID__);
-		msg.createDismissibleMessage(html);
 		_gel("remindersDiv__MODULE_ID__").innerHTML = html;
 		_IG_AdjustIFrameHeight();
 		_gel("newReminderInput__MODULE_ID__").focus();
@@ -175,6 +173,23 @@
 	function getCol__MODULE_ID__(row, index) {
 		return row.childNodes.item(index);
 	}
+	
+	function submitOnEnter__MODULE_ID__(e, form) {
+		var characterCode;
+		if(e && e.which){
+			e = e
+			characterCode = e.which
+		} else {
+			e = event
+			characterCode = e.keyCode
+		}
+		
+		if (characterCode == 13) {
+			form.submit()
+		}
+		
+		return e
+	}
 
 	_IG_Analytics("UA-99119-12", "/dayssince");
 	
@@ -218,22 +233,22 @@
 	newDaysSinceInput__MODULE_ID__.value)">
 	<table cellspacing=0>
 		<tr>
-			<td>
+			<td nowrap>
 				<input size="4" id="newDaysSinceInput__MODULE_ID__" 
-					value="0" type="text">
+					value="0" type="text"> __MSG_dayssince__
 			</td>
 			<td style='width:100%' >
 				<input id="newReminderInput__MODULE_ID__" type="text"
-						style='width:100%'>
+						style='width:100%'
+ />
 			</td>
 			<td>
-				<input type='image' alt="__MSG_add__"
-							src='http://dayssince.googlecode.com/svn/trunk/add.gif'
+				<input type='button' value="__MSG_Add__"
 							onclick = "javascript:addReminder__MODULE_ID__(
 							document.newReminderForm__MODULE_ID__.
 							newReminderInput__MODULE_ID__.value,
 							document.newReminderForm__MODULE_ID__.
-							newDaysSinceInput__MODULE_ID__.value)">
+							newDaysSinceInput__MODULE_ID__.value)" />
 			</td>
 		</tr>
 	</table>
