@@ -25,7 +25,7 @@
 	<Require feature="setprefs"/>
 	<Require feature="minimessage"/>
 </ModulePrefs>
-<UserPref name="reminders" datatype="hidden" default_value=""></UserPref>
+<UserPref name="reminders" datatype="string" default_value=""></UserPref>
 <Content type="html">
 <![CDATA[
 
@@ -40,19 +40,26 @@
 	var days = hours*24;
 	var years = days*365;
 		
-	function onLoad__MODULE_ID__() {
+	function loadReminders__MODULE_ID__() {
 		prefs__MODULE_ID__ = new _IG_Prefs(__MODULE_ID__);
 		var reminders = prefs__MODULE_ID__.getString("reminders");
+		var msg = new _IG_MiniMessage(__MODULE_ID__);
 				
-		if (reminders == "")
+		if (reminders == "") {
 			reminders__MODULE_ID__ = {"array":[]};
-		else
-			reminders__MODULE_ID__ = reminders.parseJSON();
+			msg.createDismissibleMessage("no existing reminders");
+		} else {
+			reminders__MODULE_ID__.array = reminders.parseJSON(function (key, value) {
+			        return key.indexOf('lastreset') >= 0 ? new Date(parseInt(value)) : value;
+			    });
+			msg.createDismissibleMessage(reminders__MODULE_ID__.array.length + " reminders: " + reminders +
+			" time: " + reminders__MODULE_ID__.array[0].lastreset.getTime());
+		}
 			
 		createTable__MODULE_ID__();
 	}
 	
-	_IG_RegisterOnloadHandler(onLoad__MODULE_ID__);
+	_IG_RegisterOnloadHandler(loadReminders__MODULE_ID__);
 
 	function saveReminders__MODULE_ID__(){
 		prefs__MODULE_ID__.set("reminders", reminders__MODULE_ID__.array.toJSONString());
@@ -72,8 +79,8 @@
 		reminders__MODULE_ID__.array[reminders__MODULE_ID__.array.length] =
 			{"description": description, "lastreset": date };
 			
-		createTable__MODULE_ID__();
 		saveReminders__MODULE_ID__();
+		loadReminders__MODULE_ID__();
 		return false;
 	}
 
@@ -83,8 +90,8 @@
 		                                      reminders__MODULE_ID__.array.length);
 		
 		reminders__MODULE_ID__.array = beginning.concat(end);
-		createTable__MODULE_ID__();
 		saveReminders__MODULE_ID__();
+		loadReminders__MODULE_ID__();
 	}
 	
 	function resetReminder__MODULE_ID__(number) {
@@ -94,8 +101,8 @@
 		
 		col.innerHTML = "0";
 		reminders__MODULE_ID__.array[number].lastreset = now;
-		createTable__MODULE_ID__();
 		saveReminders__MODULE_ID__();
+		loadReminders__MODULE_ID__();
 	}
 
 	function rowClass__MODULE_ID__(number) {
