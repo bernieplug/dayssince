@@ -39,26 +39,30 @@
 	var hours = minutes*60;
 	var days = hours*24;
 	var years = days*365;
+	
+	_IG_RegisterOnloadHandler(onLoad__MODULE_ID__);
+	
+	function onLoad__MODULE_ID__() {
+		prefs__MODULE_ID__ = new _IG_Prefs(__MODULE_ID__);
+		loadReminders__MODULE_ID__();	
+	}
 		
 	function loadReminders__MODULE_ID__() {
-		prefs__MODULE_ID__ = new _IG_Prefs(__MODULE_ID__);
 		var reminders = prefs__MODULE_ID__.getString("reminders");
 		
-		reminders__MODULE_ID__ = {"array":[]};
+		reminders__MODULE_ID__ = [];
 		
 		if (reminders != "") {
-			reminders__MODULE_ID__.array = reminders.parseJSON(function (key, value) {
+			reminders__MODULE_ID__ = reminders.parseJSON(function (key, value) {
 			        return key == 'lastreset' ? new Date(parseInt(value)) : value;
 			    });
 		}
 			
 		createTable__MODULE_ID__();
 	}
-	
-	_IG_RegisterOnloadHandler(loadReminders__MODULE_ID__);
 
 	function saveReminders__MODULE_ID__(){
-		prefs__MODULE_ID__.set("reminders", reminders__MODULE_ID__.array.toJSONString());
+		prefs__MODULE_ID__.set("reminders", reminders__MODULE_ID__.toJSONString());
 	}
 
 	function addReminder__MODULE_ID__(description, daysago_string) {
@@ -72,22 +76,22 @@
 		if (description == "")
 			return;
 			
-		reminders__MODULE_ID__.array[reminders__MODULE_ID__.array.length] =
+		reminders__MODULE_ID__[reminders__MODULE_ID__.length] =
 			{"description": description, "lastreset": date };
 			
 		saveReminders__MODULE_ID__();
-		loadReminders__MODULE_ID__();
+		createTable__MODULE_ID__();
 		return false;
 	}
 
 	function deleteReminder__MODULE_ID__(number) {
-		var beginning = reminders__MODULE_ID__.array.slice(0, number);
-		var end = reminders__MODULE_ID__.array.slice(number + 1,
-		                                      reminders__MODULE_ID__.array.length);
+		var beginning = reminders__MODULE_ID__.slice(0, number);
+		var end = reminders__MODULE_ID__.slice(number + 1,
+		                                      reminders__MODULE_ID__.length);
 		
-		reminders__MODULE_ID__.array = beginning.concat(end);
+		reminders__MODULE_ID__ = beginning.concat(end);
 		saveReminders__MODULE_ID__();
-		loadReminders__MODULE_ID__();
+		createTable__MODULE_ID__();
 	}
 	
 	function resetReminder__MODULE_ID__(number) {
@@ -96,9 +100,9 @@
 		var col = getCol__MODULE_ID__(row, 0);
 		
 		col.innerHTML = "0";
-		reminders__MODULE_ID__.array[number].lastreset = now;
+		reminders__MODULE_ID__[number].lastreset = now;
 		saveReminders__MODULE_ID__();
-		loadReminders__MODULE_ID__();
+		createTable__MODULE_ID__();
 	}
 
 	function rowClass__MODULE_ID__(number) {
@@ -111,12 +115,12 @@
 	function createTable__MODULE_ID__() {
 		var html = "<table cellspacing=0 id=remindersTable__MODULE_ID__>";
 		
-		for (i = 0; i < reminders__MODULE_ID__.array.length; i++) {
-			if (reminders__MODULE_ID__.array[i] == null)
+		for (i = 0; i < reminders__MODULE_ID__.length; i++) {
+			if (reminders__MODULE_ID__[i] == null)
 				break;
 			
-			var description = reminders__MODULE_ID__.array[i].description;
-			var lastreset = reminders__MODULE_ID__.array[i].lastreset;
+			var description = reminders__MODULE_ID__[i].description;
+			var lastreset = reminders__MODULE_ID__[i].lastreset;
 		
 			html = html + createRow__MODULE_ID__(i, description, lastreset);
 		}
