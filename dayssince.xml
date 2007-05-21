@@ -43,17 +43,14 @@
 	function loadReminders__MODULE_ID__() {
 		prefs__MODULE_ID__ = new _IG_Prefs(__MODULE_ID__);
 		var reminders = prefs__MODULE_ID__.getString("reminders");
-				
-		if (reminders == "") {
-			reminders__MODULE_ID__ = {"array":[]};
-		} else {
+		
+		reminders__MODULE_ID__ = {"array":[]};
+		
+		if (reminders != "") {
 			reminders__MODULE_ID__.array = reminders.parseJSON(function (key, value) {
 			        return key == 'lastreset' ? new Date(parseInt(value)) : value;
 			    });
 		}
-		
-		if (!(reminders__MODULE_ID__.array.length >= 1))
-			reminders__MODULE_ID__ = {"array":[]};
 			
 		createTable__MODULE_ID__();
 	}
