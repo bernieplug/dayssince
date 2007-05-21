@@ -48,9 +48,12 @@
 			reminders__MODULE_ID__ = {"array":[]};
 		} else {
 			reminders__MODULE_ID__.array = reminders.parseJSON(function (key, value) {
-			        return key.indexOf('lastreset') >= 0 ? new Date(parseInt(value)) : value;
+			        return key == 'lastreset' ? new Date(parseInt(value)) : value;
 			    });
 		}
+		
+		if (!(reminders__MODULE_ID__.array.length >= 1))
+			reminders__MODULE_ID__ = {"array":[]};
 			
 		createTable__MODULE_ID__();
 	}
