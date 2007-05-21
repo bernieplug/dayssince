@@ -124,21 +124,11 @@ if (!Object.prototype.toJSONString) {
 
     Date.prototype.toJSONString = function () {
 
-// Ultimately, this method will be equivalent to the date.toISOString method.
+// Bernie Thompson 5-20-2007
+// The method supplied at json.org didn't work for whatever reason in Firefox.  Date.parse couldn't make
+// heads or tails of it.  Switch to a simple miliseconds-since-1970 format of getTime().
 
-        function f(n) {
-
-// Format integers to have at least two digits.
-
-            return n < 10 ? '0' + n : n;
-        }
-
-        return '"' + this.getFullYear() + '-' +
-                f(this.getMonth() + 1) + '-' +
-                f(this.getDate()) + 'T' +
-                f(this.getHours()) + ':' +
-                f(this.getMinutes()) + ':' +
-                f(this.getSeconds()) + '"';
+        return '"' + this.getTime() + '"';
     };
 
 
