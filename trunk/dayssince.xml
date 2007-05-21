@@ -43,17 +43,13 @@
 	function loadReminders__MODULE_ID__() {
 		prefs__MODULE_ID__ = new _IG_Prefs(__MODULE_ID__);
 		var reminders = prefs__MODULE_ID__.getString("reminders");
-		var msg = new _IG_MiniMessage(__MODULE_ID__);
 				
 		if (reminders == "") {
 			reminders__MODULE_ID__ = {"array":[]};
-			msg.createDismissibleMessage("no existing reminders");
 		} else {
 			reminders__MODULE_ID__.array = reminders.parseJSON(function (key, value) {
 			        return key.indexOf('lastreset') >= 0 ? new Date(parseInt(value)) : value;
 			    });
-			msg.createDismissibleMessage(reminders__MODULE_ID__.array.length + " reminders: " + reminders +
-			" time: " + reminders__MODULE_ID__.array[0].lastreset.getTime());
 		}
 			
 		createTable__MODULE_ID__();
