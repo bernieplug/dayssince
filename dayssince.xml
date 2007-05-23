@@ -128,7 +128,6 @@
 		html = html + "</table>";
 		_gel("remindersDiv__MODULE_ID__").innerHTML = html;
 		_IG_AdjustIFrameHeight();
-		_gel("newReminderInput__MODULE_ID__").focus();
 	}
 	
 	// returns integer with calendar days since the startDate
