@@ -7,7 +7,7 @@
 	description="When was the last time you watered your plants?  Serviced the car?  Gave those grubby kids a bath? Or perhaps had a drink? This widget will put your mind at rest by keeping track of these for you."
 	render_inline="optional"
 	author="Bernie T."
-	author_email="bernie+dayssince@leancode.com"
+	author_email="widgets@leancode.com"
 	author_affiliation="Leancode Inc."
 	author_location="Bellevue, WA"
 	screenshot="http://dayssince.googlecode.com/svn/trunk/screenshot.png"
@@ -113,7 +113,7 @@
 	}
 
 	function createTable__MODULE_ID__() {
-		var html = "<table cellspacing=5px id=remindersTable__MODULE_ID__>";
+		var html = "<table cellspacing=2px id=remindersTable__MODULE_ID__>";
 		
 		for (i = 0; i < reminders__MODULE_ID__.length; i++) {
 			if (reminders__MODULE_ID__[i] == null)
@@ -130,24 +130,32 @@
 		_IG_AdjustIFrameHeight();
 		_gel("newReminderInput__MODULE_ID__").focus();
 	}
+	
+	// returns integer with calendar days since the startDate
+	// (from the first millisecond on startDate, to the first millisecond of today)
+	// startDate is a Date object
+	// assumes startDate is in the past
+	function calendarDaysSince(startDate) {
+		var now = new Date();
+		
+		return Math.floor(now.getTime()/days) - Math.floor(startDate.getTime()/days);
+	}
 
 	function createRow__MODULE_ID__(number, description, lastreset) {
 		var now = new Date();
-		var dayssince = (now.getTime() - lastreset.getTime())/days;
+		var dayssince = calendarDaysSince(lastreset);
 		
 		var html =
 			"<tr id=\"row" + number + "__MODULE_ID__\"" +
 			rowClass__MODULE_ID__(number) + ">" +
 			"<td class=dayssince_ds__MODULE_ID__><span class=dayssince_ds__MODULE_ID__>" + 
-			Math.floor(dayssince) +
+			dayssince +
 			"</span></td>" +
-			"<td class=description_td__MODULE_ID__>" +
+			"<td class=description_td__MODULE_ID__><span class=description_ds__MODULE_ID__>" +
 			_hesc(description) +
-			"</td>" +
+			"</span></td>" +
 			"<td>" +
 			createReset__MODULE_ID__(number) +
-			"</td>" +
-			"<td>" +
 			createDelete__MODULE_ID__(number) +
 			"</td>" +
 			"</tr>";
@@ -180,59 +188,69 @@
 	function getCol__MODULE_ID__(row, index) {
 		return row.childNodes.item(index);
 	}
-	
-	function submitOnEnter__MODULE_ID__(e, form) {
-		var characterCode;
-		if(e && e.which){
-			e = e
-			characterCode = e.which
-		} else {
-			e = event
-			characterCode = e.keyCode
-		}
-		
-		if (characterCode == 13) {
-			form.submit()
-		}
-		
-		return e
-	}
 
 	_IG_Analytics("UA-99119-12", "/dayssince");
 	
 </script>
 
 <style type="text/css">
-	
-	table#newReminderForm__MODULE_ID__ {
+
+	p { 
+		font-family: arial, sans-serif;
 		font-size: small;
+	}
+	
+	td.dayssince_ds__MODULE_ID__ {
+		text-align: center;
+		padding 0px 2px 0px 2px;
 	}
 	
 	td.description_td__MODULE_ID__ {
-		width: 100%;
-		margin: 0 0 0 30px;
 		text-align: center;
+		width: 100%;
+	}
+	
+	span.description_ds__MODULE_ID__ {
+
+		font-family: arial, sans-serif;
 		font-size: small;
+		margin: 0 auto;
+		padding: 0 5px 0 5px;
 	}
 	
 	span.dayssince_ds__MODULE_ID__ {
-		border: medium solid #00008B;
-		padding: 4px;
+		border: 2px solid #00008B;
 		background-color: #00BFFF;
 		color: #00008B;
-		font-size: x-large;
-		margin: 0px 20px 0px 10px;
+		font-family: arial, san-serif;
+		font-size: normal;
+		font-weight: bold;
+		padding: 0px 2px 0px 2px;
+		margin: 0 auto;
 	}
 	
 	img.delete__MODULE_ID__ {
-		border: 0;
-		margin: 0 10px 0 0;
+	    border: 0;
+		margin: 0 2px 0 4px;
+		padding: 0;
 	}
 	
 	img.reset__MODULE_ID__ {
 		border: 0;
-		margin: 0;	
-		width: 36px;
+		margin: 0 4px 0 2px;
+		padding: 0;
+	}
+	
+	form {
+		border: 0;
+		margin: 0;
+		padding: 0;
+	}
+	
+	div#remindersDiv__MODULE_ID__ {
+		border: 0;
+		margin: 0;
+		padding: 0;
 	}
 	
 </style>
@@ -243,11 +261,11 @@
 	newReminderInput__MODULE_ID__.value,
 	document.newReminderForm__MODULE_ID__.
 	newDaysSinceInput__MODULE_ID__.value)">
-	<table id="newReminderForm__MODULE_ID__" cellspacing=0px>
+	<table id="newReminderForm__MODULE_ID__" cellspacing=2px>
 		<tr>
 			<td nowrap>
-				<input size="3" id="newDaysSinceInput__MODULE_ID__" 
-					value="0" type="text"> __MSG_dayssince__ </td>
+				<p><input size="3" id="newDaysSinceInput__MODULE_ID__" 
+					value="0" type="text"> __MSG_dayssince__</p></td>
 			<td style='width:100%' >
 				<input id="newReminderInput__MODULE_ID__" type="text"
 					style='width:100%'
@@ -263,9 +281,8 @@
 			</td>
 		</tr>
 	</table>
-	<div id="remindersDiv__MODULE_ID__"></div>
 </form>
-
+<div id="remindersDiv__MODULE_ID__"></div>
 ]]>
 </Content>
 </Module>
