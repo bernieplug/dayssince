@@ -1,4 +1,9 @@
 <messagebundle>
   <msg name="Add">Add</msg> 
-  <msg name="dayssince">days since</msg> 
+  <msg name="dayssince">Days Since</msg>
+  <msg name="counter">Counter</msg>
+  <msg name="dayssince_description">When was the last time you watered your plants?  Serviced the car?  Gave those grubby kids a bath? Or perhaps had a drink? This widget will help keep track of these for you.</msg>
+  <msg name="yourreminders">Your Reminders</msg>
+  <msg name="version">version</msg>
+  <msg name="daysuntil">Days Until</msg>
 </messagebundle>
