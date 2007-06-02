@@ -3,8 +3,8 @@
 <ModulePrefs 
 	title="__MSG_dayssince__"
 	title_url="http://leancode.com/dayssince/"
-	directory_title="__MSG_dayssince_ __MSG_counter__"
-	description="__MSG_dayssince_description__"
+	directory_title="__MSG_dayssince__ __MSG_counter__"
+	description="__MSG_description__"
 	scrolling="false"
 	singleton="false"
 	author="Bernie T."
@@ -24,7 +24,7 @@
 	<Require feature="dynamic-height"/>
 </ModulePrefs>
 <UserPref name="reminders" display_name="__MSG_yourreminders__" datatype="string" default_value="[]"></UserPref>
-<UserPref name="version" display_name="__MSG_dayssince_ __MSG_version__" datatype="string" default_value=" $Rev$ "></UserPref>
+<UserPref name="version" display_name="__MSG_dayssince__ __MSG_version__" datatype="string" default_value=" $Rev$ "></UserPref>
 <Content type="html">
 <![CDATA[
 
