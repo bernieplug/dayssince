@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
 <ModulePrefs 
-	title="Days Since"
+	title="__MSG_dayssince__"
 	title_url="http://leancode.com/dayssince/"
-	directory_title="Days Since ... Timer"
-	description="When was the last time you watered your plants?  Serviced the car?  Gave those grubby kids a bath? Or perhaps had a drink? This widget will put your mind at rest by keeping track of these for you."
-	render_inline="optional"
+	directory_title="__MSG_dayssince_ __MSG_counter__"
+	description="__MSG_dayssince_description__"
+	scrolling="false"
+	singleton="false"
 	author="Bernie T."
 	author_email="widgets@leancode.com"
 	author_affiliation="Leancode Inc."
@@ -16,16 +17,14 @@
 	author_aboutme="Software developer and entrepreneur. Look me up to talk about your next project."
 	author_quote="Time. time. time.  Look what's become of me."
 	author_link="http://leancode.com/"
-	height="150"
-	scrolling = "true"
 >
 	<Locale messages="http://dayssince.googlecode.com/svn/trunk/ALL_ALL.xml"/>
 	<Require feature="analytics"/>
-	<Require feature="dynamic-height"/>
 	<Require feature="setprefs"/>
-	<Require feature="minimessage"/>
+	<Require feature="dynamic-height"/>
 </ModulePrefs>
-<UserPref name="reminders" datatype="string" default_value=""></UserPref>
+<UserPref name="reminders" display_name="__MSG_yourreminders__" datatype="string" default_value="[]"></UserPref>
+<UserPref name="version" display_name="__MSG_dayssince_ __MSG_version__" datatype="string" default_value=" $Rev$ "></UserPref>
 <Content type="html">
 <![CDATA[
 
@@ -63,25 +62,29 @@
 
 	function saveReminders__MODULE_ID__(){
 		prefs__MODULE_ID__.set("reminders", reminders__MODULE_ID__.toJSONString());
+		loadReminders__MODULE_ID__();
 	}
 
 	function addReminder__MODULE_ID__(description, daysago_string) {
 		var description = _trim(description);
 		var date = new Date();
 		var daysago = parseInt(daysago_string);
+		if (isNaN(daysago)) {
+			daysago = 0;
+		}
 		
 		date.setDate(date.getDate()-daysago);
 		
 		_gel("newReminderInput__MODULE_ID__").value = "";
 		if (description == "")
-			return;
+			return false;
 			
 		reminders__MODULE_ID__[reminders__MODULE_ID__.length] =
 			{"description": description, "lastreset": date };
 			
 		saveReminders__MODULE_ID__();
 		createTable__MODULE_ID__();
-		return false;
+		return true;
 	}
 
 	function deleteReminder__MODULE_ID__(number) {
@@ -130,14 +133,16 @@
 		_IG_AdjustIFrameHeight();
 	}
 	
-	// returns integer with calendar days since the startDate
-	// (from the first millisecond on startDate, to the first millisecond of today)
-	// startDate is a Date object
-	// assumes startDate is in the past
+	// returns integer with calendar days since the startDate, midnight to midnight
+	// startDate is a Date object. Assumes startDate is in the past.
 	function calendarDaysSince(startDate) {
-		var now = new Date();
+		var nowDate = new Date();
 		
-		return Math.floor(now.getTime()/days) - Math.floor(startDate.getTime()/days);
+		// Roll clocks back to midnight
+		var start = new Date(startDate.getYear(), startDate.getMonth(), startDate.getDate());
+		var now = new Date(nowDate.getYear(), nowDate.getMonth(), nowDate.getDate());
+		
+		return Math.ceil((now.getTime()-start.getTime())/days);
 	}
 
 	function createRow__MODULE_ID__(number, description, lastreset) {
@@ -147,9 +152,9 @@
 		var html =
 			"<tr id=\"row" + number + "__MODULE_ID__\"" +
 			rowClass__MODULE_ID__(number) + ">" +
-			"<td class=dayssince_ds__MODULE_ID__><span class=dayssince_ds__MODULE_ID__>" + 
+			"<td class=dayssince_ds__MODULE_ID__><div class=dayssince_ds__MODULE_ID__>" + 
 			dayssince +
-			"</span></td>" +
+			"</div></td>" +
 			"<td class=description_td__MODULE_ID__><span class=description_ds__MODULE_ID__>" +
 			_hesc(description) +
 			"</span></td>" +
@@ -163,19 +168,21 @@
 	}
 
 	function createDelete__MODULE_ID__(number) {
+		var img = _IG_GetImageUrl('http://dayssince.googlecode.com/svn/trunk/x.gif');
 		var html =
 			"<a href=\"javascript:deleteReminder__MODULE_ID__(" + number + ")\">" +
 			"<img class=delete__MODULE_ID__" +
-			" src=\"http://dayssince.googlecode.com/svn/trunk/x.gif\">" +
+			" src=\"" + img + "\">" +
 			"</a>";
 		return html;
 	}
 
 	function createReset__MODULE_ID__(number) {
+		var img = _IG_GetImageUrl('http://dayssince.googlecode.com/svn/trunk/reset.gif');
 		var html =
 			"<a href=\"javascript:resetReminder__MODULE_ID__(" + number + ")\">" +
 			"<img class=reset__MODULE_ID__" +
-			" src=\"http://dayssince.googlecode.com/svn/trunk/reset.gif\">" +
+			" src=\"" + img + "\">" +
 			"</a>";
 		return html;
 	}
@@ -217,7 +224,7 @@
 		padding: 0 5px 0 5px;
 	}
 	
-	span.dayssince_ds__MODULE_ID__ {
+	div.dayssince_ds__MODULE_ID__ {
 		border: 2px solid #00008B;
 		background-color: #00BFFF;
 		color: #00008B;
@@ -225,7 +232,8 @@
 		font-size: normal;
 		font-weight: bold;
 		padding: 0px 2px 0px 2px;
-		margin: 0 auto;
+		margin: 0 2px;
+		float: right;
 	}
 	
 	img.delete__MODULE_ID__ {
