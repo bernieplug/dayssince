@@ -56,7 +56,8 @@
 	}
 
 	function closeMessage__MODULE_ID__(){
-		prefs__MODULE_ID__.set("msg1", 1);
+		prefs__MODULE_ID__.set("msg1", "1");
+		return true;
 	}
 		
 	function loadReminders__MODULE_ID__() {
