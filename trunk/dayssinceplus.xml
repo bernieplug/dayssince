@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+<ModulePrefs 
+	title="__MSG_dayssinceplus__"
+	title_url="http://leancode.com/dayssince/"
+	directory_title="__MSG_dayssinceplus__ __MSG_counter__"
+	description="__MSG_description__"
+	scrolling="false"
+	singleton="false"
+	author="Ping Z."
+	author_email="sg71.cherub@gmail.com"
+	author_affiliation="Sheffield University"
+	author_location="Cardiff, UK"
+	screenshot="http://dayssince.googlecode.com/svn/trunk/dayssinceplus_screenshot.PNG"
+	thumbnail="http://dayssince.googlecode.com/svn/trunk/dayssinceplus_thumbnail.png"
+	author_photo="http://farm1.static.flickr.com/208/506304259_e8bdeda2cd_t.jpg"
+	author_aboutme="Student"
+	author_quote=""
+	author_link="http://sg71cherub.spaces.live.com"
+>
+	<Locale messages="http://dayssince.googlecode.com/svn/trunk/ALL_ALL.xml"/>
+	<Require feature="analytics"/>
+	<Require feature="setprefs"/>
+	<Require feature="dynamic-height"/>
+	<Require feature="minimessage" />
+</ModulePrefs>
+<UserPref name="reminders" display_name="__MSG_yourreminders__" datatype="string" default_value="[]"></UserPref>
+<UserPref name="version" display_name="__MSG_dayssinceplus__ __MSG_version__" datatype="string" default_value=" $Rev$ "></UserPref>
+<Content type="html">
+<![CDATA[
+
+<script language="JavaScript" src="http://dayssince.googlecode.com/svn/trunk/json.js"></script>
+
+<script>
+	var msg = new _IG_MiniMessage(__MODULE_ID__);
+	
+	var reminders__MODULE_ID__; // This is a json object of reminders 
+								// (array of hashes with 'description', 'lastreset', 'dayssince', 'counter' & 'sum')
+	var stat__MODULE_ID__;		// this is a json object of statistic feature, include 'mean'
+	
+	var prefs__MODULE_ID__;	
+	var minutes = 1000*60;
+	var hours = minutes*60;
+	var days = hours*24;
+	var years = days*365;
+	
+	_IG_RegisterOnloadHandler(onLoad__MODULE_ID__);
+	
+	function onLoad__MODULE_ID__() {
+		prefs__MODULE_ID__ = new _IG_Prefs(__MODULE_ID__);
+		loadReminders__MODULE_ID__();	
+	} // no change
+		
+	function loadReminders__MODULE_ID__() {
+		var reminders = prefs__MODULE_ID__.getString("reminders");
+		
+		reminders__MODULE_ID__ = [];
+		
+		if (reminders != "") {
+			reminders__MODULE_ID__ = reminders.parseJSON(function (key, value) {
+			        return key == 'lastreset' ? new Date(parseInt(value)) : value;
+			    });
+		}
+			
+		createTable__MODULE_ID__();
+	} // no change
+
+	function saveReminders__MODULE_ID__(){
+		prefs__MODULE_ID__.set("reminders", reminders__MODULE_ID__.toJSONString());
+		loadReminders__MODULE_ID__();
+	} // no change
+
+	function addReminder__MODULE_ID__(description, daysago_string) {
+		var description = _trim(description);
+		
+
+		var daysago = parseInt(daysago_string);
+		if (isNaN(daysago)) {
+			daysago = 0;
+		}		
+		var now = new Date();				
+		var counter = 1;		
+		var sum = daysago;		
+		
+		_gel("newReminderInput__MODULE_ID__").value = "";
+		if (description == "")
+			return false;
+			
+		reminders__MODULE_ID__[reminders__MODULE_ID__.length] =
+			{"description": description, "lastreset": now, "dayssince": daysago, "counter": counter, "sum": sum};
+			
+		saveReminders__MODULE_ID__();
+		createTable__MODULE_ID__();
+		return true;
+	}
+
+	function deleteReminder__MODULE_ID__(number) {
+		var beginning = reminders__MODULE_ID__.slice(0, number);
+		var end = reminders__MODULE_ID__.slice(number + 1,
+		                                      reminders__MODULE_ID__.length);
+		
+		reminders__MODULE_ID__ = beginning.concat(end);
+		saveReminders__MODULE_ID__();
+		createTable__MODULE_ID__();
+	} // no change
+	
+	function resetReminder__MODULE_ID__(number) {
+		var now = new Date();
+		var lastdate = reminders__MODULE_ID__[number].lastreset;
+		var datediff = now.getDate() - lastdate.getDate();
+		
+		var row = getRow__MODULE_ID__(number);
+		var col = getCol__MODULE_ID__(row, 0);
+		
+		col.innerHTML = "0";
+		reminders__MODULE_ID__[number].lastreset = now;
+		reminders__MODULE_ID__[number].dayssince = 0;
+		reminders__MODULE_ID__[number].counter ++;
+		reminders__MODULE_ID__[number].sum += datediff;
+		
+		saveReminders__MODULE_ID__();
+		createTable__MODULE_ID__();
+	}
+
+	function rowClass__MODULE_ID__(number) {
+		if (number % 2 != 0)
+			return " class=odd__MODULE_ID__ ";
+		else
+			return " class=even__MODULE_ID__ ";
+	}
+
+	function createTable__MODULE_ID__() {
+		var html = "<table cellspacing=2px id=remindersTable__MODULE_ID__>";
+		
+		for (i = 0; i < reminders__MODULE_ID__.length; i++) {
+			if (reminders__MODULE_ID__[i] == null)
+				break;
+			
+			var description = reminders__MODULE_ID__[i].description;
+			var lastreset = reminders__MODULE_ID__[i].lastreset;
+			var dayssince = reminders__MODULE_ID__[i].dayssince;
+			var frequency = calculateFrequency__MODULE_ID__(reminders__MODULE_ID__[i]);
+		
+			html = html + createRow__MODULE_ID__(i, description, lastreset, dayssince, frequency);
+		}
+		
+		html = html + "</table>";
+		_gel("remindersDiv__MODULE_ID__").innerHTML = html;
+		_IG_AdjustIFrameHeight();
+	}
+	
+	function calculateFrequency__MODULE_ID__(reminder)
+	{
+		var sum = parseInt(reminder.sum);
+		// msg.createDismissibleMessage(sum);
+		var counter = parseInt(reminder.counter);
+		// msg.createDismissibleMessage(counter);
+		var frequency = Math.floor(sum / counter);
+		if (frequency == 0)
+			frequency = "<1";
+		return frequency;
+	}
+	
+	
+	// returns integer with calendar days since the startDate, midnight to midnight
+	// startDate is a Date object. Assumes startDate is in the past.
+	function calendarDaysSince(startDate) {
+		var nowDate = new Date();
+		
+		// Roll clocks back to midnight
+		var start = new Date(startDate.getYear(), startDate.getMonth(), startDate.getDate());
+		var now = new Date(nowDate.getYear(), nowDate.getMonth(), nowDate.getDate());
+		
+		return Math.ceil((now.getTime()-start.getTime())/days);
+	}
+
+	function createRow__MODULE_ID__(number, description, lastreset, dayssince, frequency) {
+		var now = new Date();
+		var days = calendarDaysSince(lastreset) + dayssince;
+		
+		var html =
+			"<tr id=\"row" + number + "__MODULE_ID__\"" +
+			rowClass__MODULE_ID__(number) + ">" +
+			"<td class=dayssince_ds__MODULE_ID__><div class=dayssince_ds__MODULE_ID__>" + 
+			days +
+			"</div></td>" +
+			"<td class=description_td__MODULE_ID__><span class=description_ds__MODULE_ID__>" +
+			_hesc(description) +
+			"</span></td>" +
+			"<td class=frequency_td__MODULE_ID__><span class=frequency_ds__MODULE_ID__>" +
+			frequency +
+			"</span></td>" +
+			"<td>" +
+			createReset__MODULE_ID__(number) +
+			createDelete__MODULE_ID__(number) +
+			"</td>" +
+			"</tr>";
+
+		return html;
+	}
+
+	function createDelete__MODULE_ID__(number) {
+		var img = _IG_GetImageUrl('http://dayssinceplus.googlecode.com/svn/trunk/x.gif');
+		var html =
+			"<a href=\"javascript:deleteReminder__MODULE_ID__(" + number + ")\">" +
+			"<img class=delete__MODULE_ID__" +
+			" src=\"" + img + "\">" +
+			"</a>";
+		return html;
+	}
+
+	function createReset__MODULE_ID__(number) {
+		var img = _IG_GetImageUrl('http://dayssinceplus.googlecode.com/svn/trunk/reset.gif');
+		var html =
+			"<a href=\"javascript:resetReminder__MODULE_ID__(" + number + ")\">" +
+			"<img class=reset__MODULE_ID__" +
+			" src=\"" + img + "\">" +
+			"</a>";
+		return html;
+	}
+
+	function getRow__MODULE_ID__(number) {
+		return _gel("row" + number + "__MODULE_ID__");
+	}
+
+	function getCol__MODULE_ID__(row, index) {
+		return row.childNodes.item(index);
+	}
+
+	_IG_Analytics("UA-450084-2", "/dayssinceplus");
+	
+</script>
+
+<style type="text/css">
+
+	p { 
+		font-family: arial, sans-serif;
+		font-size: small;
+	}
+	
+	td.dayssince_ds__MODULE_ID__ {
+		text-align: center;
+		padding 0px 2px 0px 2px;
+	}
+	
+	td.description_td__MODULE_ID__ {
+		text-align: center;
+		width: 90%;
+	}
+	
+	td.frequency_td__MODULE_ID__ {
+		text-align: center;
+		width: 10%;
+	}
+	
+	span.description_ds__MODULE_ID__ {
+
+		font-family: arial, sans-serif;
+		font-size: small;
+		margin: 0 auto;
+		padding: 0 5px 0 5px;
+	}
+	
+	span.frequency_ds__MODULE_ID__ {
+		font-family: arial, sans-serif;
+		font-size: small;
+		margin: 0 auto;
+		padding: 0 5px 0 5px;
+		color: #ff0000;
+	}
+	
+	div.dayssince_ds__MODULE_ID__ {
+		border: 2px solid #00008B;
+		background-color: #00BFFF;
+		color: #00008B;
+		font-family: arial, san-serif;
+		font-size: normal;
+		font-weight: bold;
+		padding: 0px 2px 0px 2px;
+		margin: 0 2px;
+		float: right;
+	}
+	
+	img.delete__MODULE_ID__ {
+	    border: 0;
+		margin: 0 2px 0 4px;
+		padding: 0;
+	}
+	
+	img.reset__MODULE_ID__ {
+		border: 0;
+		margin: 0 4px 0 2px;
+		padding: 0;
+	}
+	
+	form {
+		border: 0;
+		margin: 0;
+		padding: 0;
+	}
+	
+	div#remindersDiv__MODULE_ID__ {
+		border: 0;
+		margin: 0;
+		padding: 0;
+	}
+	
+</style>
+
+<form name = "newReminderForm__MODULE_ID__"
+	onsubmit="return addReminder__MODULE_ID__(
+	document.newReminderForm__MODULE_ID__.
+	newReminderInput__MODULE_ID__.value,
+	document.newReminderForm__MODULE_ID__.
+	newDaysSinceInput__MODULE_ID__.value)">
+	<table id="newReminderForm__MODULE_ID__" cellspacing=2px>
+		<tr>
+			<td nowrap>
+				<p><input size="3" id="newDaysSinceInput__MODULE_ID__" 
+					value="0" type="text"> __MSG_dayssince__</p></td>
+			<td style='width:100%' >
+				<input id="newReminderInput__MODULE_ID__" type="text"
+					style='width:100%'
+ />
+			</td>
+			<td>
+				<input type='button' value="__MSG_Add__"
+							onclick = "javascript:addReminder__MODULE_ID__(
+							document.newReminderForm__MODULE_ID__.
+							newReminderInput__MODULE_ID__.value,
+							document.newReminderForm__MODULE_ID__.
+							newDaysSinceInput__MODULE_ID__.value)" />
+			</td>
+		</tr>
+	</table>
+</form>
+<div id="remindersDiv__MODULE_ID__"></div>
+]]>
+</Content>
+</Module>
+
