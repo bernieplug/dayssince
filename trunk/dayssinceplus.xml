@@ -227,7 +227,7 @@
 		return row.childNodes.item(index);
 	}
 
-	_IG_Analytics("UA-450084-2", "/dayssinceplus");
+	_IG_Analytics("UA-99119-12", "/dayssinceplus");
 	
 </script>
 
