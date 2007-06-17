@@ -2,7 +2,7 @@
   <msg name="Add">Add</msg> 
   <msg name="dayssince">Days Since</msg>
   <msg name="dayssinceplus">Days Since Plus</msg>
-  <msg name="counter">Counter</msg>
+  <msg name="directorytitle">Days Since Counter</msg>
   <msg name="description">How many days ago did you last water the plants?  Service the car?  Give those grubby kids a bath? Or perhaps had a drink? Use this as a type of time management tool, reminder, or counter.</msg>
   <msg name="yourreminders">Your Reminders</msg>
   <msg name="version">version</msg>
