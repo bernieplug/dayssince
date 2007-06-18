@@ -2,7 +2,7 @@
 <Module>
 <ModulePrefs 
 	title="__MSG_dayssinceplus__"
-	title_url="http://leancode.com/dayssince/"
+	title_url="http://sg71cherub.spaces.live.com/blog/cns!F075CEA8369A9CA1!1698.entry"
 	directory_title="__MSG_dayssinceplus__ __MSG_counter__"
 	description="__MSG_description__"
 	scrolling="false"
@@ -11,14 +11,14 @@
 	author_email="sg71.cherub@gmail.com"
 	author_affiliation="Sheffield University"
 	author_location="Cardiff, UK"
-	screenshot="http://dayssince.googlecode.com/svn/trunk/dayssinceplus_screenshot.PNG"
-	thumbnail="http://dayssince.googlecode.com/svn/trunk/dayssinceplus_thumbnail.png"
+	screenshot="http://dayssinceplus.googlecode.com/svn/trunk/dayssinceplus_screenshot.PNG"
+	thumbnail="http://dayssinceplus.googlecode.com/svn/trunk/dayssinceplus_thumbnail.png"
 	author_photo="http://farm1.static.flickr.com/208/506304259_e8bdeda2cd_t.jpg"
 	author_aboutme="Student"
 	author_quote=""
 	author_link="http://sg71cherub.spaces.live.com"
 >
-	<Locale messages="http://dayssince.googlecode.com/svn/trunk/ALL_ALL.xml"/>
+	<Locale messages="http://dayssinceplus.googlecode.com/svn/trunk/ALL_ALL.xml"/>
 	<Require feature="analytics"/>
 	<Require feature="setprefs"/>
 	<Require feature="dynamic-height"/>
@@ -29,7 +29,7 @@
 <Content type="html">
 <![CDATA[
 
-<script language="JavaScript" src="http://dayssince.googlecode.com/svn/trunk/json.js"></script>
+<script language="JavaScript" src="http://dayssinceplus.googlecode.com/svn/trunk/json.js"></script>
 
 <script>
 	var msg = new _IG_MiniMessage(__MODULE_ID__);
@@ -49,6 +49,7 @@
 	function onLoad__MODULE_ID__() {
 		prefs__MODULE_ID__ = new _IG_Prefs(__MODULE_ID__);
 		loadReminders__MODULE_ID__();	
+		msg.createDismissibleMessage("The Gadget is under updating......");
 	} // no change
 		
 	function loadReminders__MODULE_ID__() {
@@ -73,28 +74,30 @@
 	function addReminder__MODULE_ID__(description, daysago_string) {
 		var description = _trim(description);
 		
-
 		var daysago = parseInt(daysago_string);
-		if (isNaN(daysago)) {
+		if (isNaN(daysago))
+		{
 			daysago = 0;
-		}		
-		var now = new Date();				
-		var counter = 1;		
-		var sum = daysago;		
+		}
+		var now = new Date();
+		var lastreset = getDateAgo(now, daysago);
+		var counter = 1;
+		var sum = 0;		
 		
 		_gel("newReminderInput__MODULE_ID__").value = "";
 		if (description == "")
 			return false;
 			
 		reminders__MODULE_ID__[reminders__MODULE_ID__.length] =
-			{"description": description, "lastreset": now, "dayssince": daysago, "counter": counter, "sum": sum};
+			{"description": description, "lastreset": lastreset, "counter": counter, "sum": sum};
 			
 		saveReminders__MODULE_ID__();
 		createTable__MODULE_ID__();
 		return true;
 	}
 
-	function deleteReminder__MODULE_ID__(number) {
+	function deleteReminder__MODULE_ID__(number) 
+	{
 		var beginning = reminders__MODULE_ID__.slice(0, number);
 		var end = reminders__MODULE_ID__.slice(number + 1,
 		                                      reminders__MODULE_ID__.length);
@@ -104,19 +107,21 @@
 		createTable__MODULE_ID__();
 	} // no change
 	
-	function resetReminder__MODULE_ID__(number) {
+	function resetReminder__MODULE_ID__(number) 
+	{		
 		var now = new Date();
-		var lastdate = reminders__MODULE_ID__[number].lastreset;
-		var datediff = now.getDate() - lastdate.getDate();
+		var lastreset = reminders__MODULE_ID__[number].lastreset;
+		var dayssince = calendarDaysSince(lastreset);
+		// msg.createDismissibleMessage("dayssince = ");
+		// msg.createDismissibleMessage(dayssince);
 		
 		var row = getRow__MODULE_ID__(number);
 		var col = getCol__MODULE_ID__(row, 0);
 		
 		col.innerHTML = "0";
 		reminders__MODULE_ID__[number].lastreset = now;
-		reminders__MODULE_ID__[number].dayssince = 0;
 		reminders__MODULE_ID__[number].counter ++;
-		reminders__MODULE_ID__[number].sum += datediff;
+		reminders__MODULE_ID__[number].sum += dayssince;
 		
 		saveReminders__MODULE_ID__();
 		createTable__MODULE_ID__();
@@ -138,10 +143,9 @@
 			
 			var description = reminders__MODULE_ID__[i].description;
 			var lastreset = reminders__MODULE_ID__[i].lastreset;
-			var dayssince = reminders__MODULE_ID__[i].dayssince;
-			var frequency = calculateFrequency__MODULE_ID__(reminders__MODULE_ID__[i]);
-		
-			html = html + createRow__MODULE_ID__(i, description, lastreset, dayssince, frequency);
+			var frequency = calculateFrequency__MODULE_ID__(reminders__MODULE_ID__[i]);		
+			
+			html = html + createRow__MODULE_ID__(i, description, lastreset, frequency);
 		}
 		
 		html = html + "</table>";
@@ -149,40 +153,68 @@
 		_IG_AdjustIFrameHeight();
 	}
 	
+	// return frequency in integer days, if frequency < 1 day, display string "<1"	
+	// display frequency only counter > 1, i.e., after reset at least once. 
 	function calculateFrequency__MODULE_ID__(reminder)
 	{
 		var sum = parseInt(reminder.sum);
+		// msg.createDismissibleMessage("sum = ");
 		// msg.createDismissibleMessage(sum);
 		var counter = parseInt(reminder.counter);
+		// msg.createDismissibleMessage("counter = ");
 		// msg.createDismissibleMessage(counter);
-		var frequency = Math.floor(sum / counter);
-		if (frequency == 0)
-			frequency = "<1";
+		
+		var frequency;
+		
+		if (counter == 1)
+			frequency = "";
+		else
+		{					
+			frequency = Math.floor(sum / counter);
+			if (frequency == 0)
+				frequency = "<1";			
+		}
+		
 		return frequency;
 	}
-	
-	
+		
 	// returns integer with calendar days since the startDate, midnight to midnight
 	// startDate is a Date object. Assumes startDate is in the past.
-	function calendarDaysSince(startDate) {
-		var nowDate = new Date();
+	function calendarDaysSince(startdate) {
+		var nowdate = new Date();
 		
 		// Roll clocks back to midnight
-		var start = new Date(startDate.getYear(), startDate.getMonth(), startDate.getDate());
-		var now = new Date(nowDate.getYear(), nowDate.getMonth(), nowDate.getDate());
+		var start = new Date(startdate.getYear(), startdate.getMonth(), startdate.getDate());
+		var now = new Date(nowdate.getYear(), nowdate.getMonth(), nowdate.getDate());
 		
 		return Math.ceil((now.getTime()-start.getTime())/days);
 	}
-
-	function createRow__MODULE_ID__(number, description, lastreset, dayssince, frequency) {
+	
+	// returns Date object, which is daysAfter after startDate (Date object)
+	function getDateAfter(startdate, daysafter)
+	{
+		var enddate = new Date();
+		enddate.setTime(startdate.getTime() + days * daysafter);
+		return enddate;
+	}
+	
+	// returns Date object, which is daysBefore before endDate (Date object)
+	function getDateAgo(enddate, daysago)
+	{
+		var startdate = new Date();
+		startdate.setTime(enddate.getTime() - days * daysago);
+		return startdate;
+	}
+	
+	function createRow__MODULE_ID__(number, description, lastreset, frequency) {
 		var now = new Date();
-		var days = calendarDaysSince(lastreset) + dayssince;
+		var dayssince = calendarDaysSince(lastreset);
 		
 		var html =
 			"<tr id=\"row" + number + "__MODULE_ID__\"" +
 			rowClass__MODULE_ID__(number) + ">" +
 			"<td class=dayssince_ds__MODULE_ID__><div class=dayssince_ds__MODULE_ID__>" + 
-			days +
+			dayssince +
 			"</div></td>" +
 			"<td class=description_td__MODULE_ID__><span class=description_ds__MODULE_ID__>" +
 			_hesc(description) +
@@ -227,7 +259,7 @@
 		return row.childNodes.item(index);
 	}
 
-	_IG_Analytics("UA-99119-12", "/dayssinceplus");
+	_IG_Analytics("UA-450084-2", "/dayssinceplus");
 	
 </script>
 
