@@ -48,8 +48,8 @@
 	
 	function onLoad__MODULE_ID__() {
 		prefs__MODULE_ID__ = new _IG_Prefs(__MODULE_ID__);
-		loadReminders__MODULE_ID__();	
 		msg.createDismissibleMessage("The Gadget is under updating......");
+		loadReminders__MODULE_ID__();			
 	} // no change
 		
 	function loadReminders__MODULE_ID__() {
@@ -92,7 +92,7 @@
 			{"description": description, "lastreset": lastreset, "counter": counter, "sum": sum};
 			
 		saveReminders__MODULE_ID__();
-		createTable__MODULE_ID__();
+		// createTable__MODULE_ID__();
 		return true;
 	}
 
@@ -104,7 +104,7 @@
 		
 		reminders__MODULE_ID__ = beginning.concat(end);
 		saveReminders__MODULE_ID__();
-		createTable__MODULE_ID__();
+		// createTable__MODULE_ID__();
 	} // no change
 	
 	function resetReminder__MODULE_ID__(number) 
@@ -124,7 +124,7 @@
 		reminders__MODULE_ID__[number].sum += dayssince;
 		
 		saveReminders__MODULE_ID__();
-		createTable__MODULE_ID__();
+		// createTable__MODULE_ID__();
 	}
 
 	function rowClass__MODULE_ID__(number) {
@@ -143,7 +143,7 @@
 			
 			var description = reminders__MODULE_ID__[i].description;
 			var lastreset = reminders__MODULE_ID__[i].lastreset;
-			var frequency = calculateFrequency__MODULE_ID__(reminders__MODULE_ID__[i]);		
+			var frequency = calculateFrequency(reminders__MODULE_ID__[i]);		
 			
 			html = html + createRow__MODULE_ID__(i, description, lastreset, frequency);
 		}
@@ -155,7 +155,7 @@
 	
 	// return frequency in integer days, if frequency < 1 day, display string "<1"	
 	// display frequency only counter > 1, i.e., after reset at least once. 
-	function calculateFrequency__MODULE_ID__(reminder)
+	function calculateFrequency(reminder)
 	{
 		var sum = parseInt(reminder.sum);
 		// msg.createDismissibleMessage("sum = ");
