@@ -48,7 +48,7 @@
 	
 	function onLoad__MODULE_ID__() {
 		prefs__MODULE_ID__ = new _IG_Prefs(__MODULE_ID__);
-		msg.createDismissibleMessage("The Gadget is under updating......");
+		msg.createDismissibleMessage("Days Since Plus has been updated recently...");
 		loadReminders__MODULE_ID__();			
 	} // no change
 		
