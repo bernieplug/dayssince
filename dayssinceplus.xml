@@ -45,6 +45,7 @@
 	function onLoad__MODULE_ID__() {
 		prefs__MODULE_ID__ = new _IG_Prefs(__MODULE_ID__);
 		msg.createDismissibleMessage("Days Since Plus has been updated recently...Don't worry, no data lost.");
+		msg.createDismissibleMessage("I will take care of the ugly sorting arrows soon. :P");
 		loadReminders__MODULE_ID__();			
 	}
 		
