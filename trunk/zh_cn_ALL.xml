@@ -1,14 +1,15 @@
-<messagebundle>
-  <msg name="Add">����</msg> 
-  <msg name="dayssince">������˹</msg>
-  <msg name="dayssinceplus">������˹</msg>
-  <msg name="counter">������</msg>
-  <msg name="description">�ϴθ���ֲ��ˮ�Ǽ���ǰ��ȥ�����أ�������ϴ���أ����ߺͺ����ѳ�ȥ�Ⱦ��أ��������Ϊһ��ʱ��������ߡ����������߼�������</msg>
-  <msg name="yourreminders">��¼</msg>
+﻿<messagebundle>
+  <msg name="Add">添加</msg> 
+  <msg name="dayssince">逝者如斯</msg>
+  <msg name="dayssinceplus">逝者如斯</msg>
+  <msg name="counter">计数器</msg>
+  <msg name="description">上次给绿植浇水是几天前？去健身呢？给孩子洗澡呢？或者和狐朋狗友出去喝酒呢？用这个谷歌小工具作为一种时间管理工具、提醒或者计数器。</msg>
+  <msg name="yourreminders">记录</msg>
   <msg name="version">�汾</msg>
-  <msg name="daysuntil">����ü��</msg>
-  <msg name="nofrequencyrecord">��Ƶ�ʼ�¼��Ϊ����������1</msg>
-  <msg name="day">��һ��</msg>
-  <msg name="days">��һ��</msg>
-  <msg name="frequency">ƽ��</msg>
+  <msg name="daysuntil">迫在眉睫</msg>
+  <msg name="nofrequencyrecord">无频率记录因为计数器等于1</msg>
+  <msg name="day">天一次</msg>
+  <msg name="days">天一次</msg>
+  <msg name="frequency">平均</msg>
+  <msg name="systemmessage">“逝者如斯”刚刚升级……放心，数据不会丢失。</msg>
 </messagebundle>
