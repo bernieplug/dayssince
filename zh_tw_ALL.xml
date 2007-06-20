@@ -1,0 +1,14 @@
+<messagebundle>
+  <msg name="Add">添加</msg> 
+  <msg name="dayssince">逝者如斯</msg>
+  <msg name="dayssinceplus">逝者如斯</msg>
+  <msg name="counter">計數器</msg>
+  <msg name="description">上次給綠植澆水是幾天前？去健身呢？給孩子洗澡呢？或者和狐朋狗友出去喝酒呢？用這個作為一種時間管理工具、提醒器或者計數器。</msg>
+  <msg name="yourreminders">記錄</msg>
+  <msg name="version">版本</msg>
+  <msg name="daysuntil">迫在眉睫</msg>
+  <msg name="nofrequencyrecord">無頻率記錄因為計數器等于1</msg>
+  <msg name="day">天一次</msg>
+  <msg name="days">天一次</msg>
+  <msg name="frequency">平均</msg>
+</messagebundle>

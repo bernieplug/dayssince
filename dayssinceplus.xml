@@ -19,6 +19,8 @@
 	author_link="http://sg71cherub.spaces.live.com"
 >
 	<Locale messages="http://dayssinceplus.googlecode.com/svn/trunk/ALL_ALL.xml"/>
+	<Locale lang="zh-cn" messages="http://dayssinceplus.googlecode.com/svn/trunk/zh_cn_ALL.xml"/> 
+	<Locale lang="zh-tw" messages="http://dayssinceplus.googlecode.com/svn/trunk/zh_tw_ALL.xml"/> 
 	<Require feature="analytics"/>
 	<Require feature="setprefs"/>
 	<Require feature="dynamic-height"/>
@@ -30,36 +32,47 @@
 <![CDATA[
 
 <script type="text/javascript" src = "http://dayssinceplus.googlecode.com/svn/trunk/json.js"></script>
+<script type="text/javascript" src = "http://dayssinceplus.googlecode.com/svn/trunk/datemath.js"></script>
+<script type="text/javascript" src = "http://dayssinceplus.googlecode.com/svn/trunk/stat.js"></script>
 
 <script type="text/javascript">
-	var msg = new _IG_MiniMessage(__MODULE_ID__);
 	
+	// global variables
+	var msg = new _IG_MiniMessage(__MODULE_ID__);	// 	minimessage 
 	var reminders__MODULE_ID__; // This is a json object of reminders 
-								// (array of hashes with 'description', 'lastreset', 'counter' & 'sum')
-	var stat__MODULE_ID__;		// this is a json object of statistic feature, include 'mean'	
-	var prefs__MODULE_ID__;	
+								// data structure:
+								// (array of hashes with 'description', 'lastreset', 'counter', 'sum' & 'frequency')
+								// 'description' is string
+								// 'lastreset' is Date
+								// 'counter' is integer
+								// 'sum' is integer
+								// 'frequency' is float									
+	var prefs__MODULE_ID__;		// user preferences
+	
 	var ascent__MODULE_ID__ = false;
+	
 	
 	_IG_RegisterOnloadHandler(onLoad__MODULE_ID__);
 	
 	function onLoad__MODULE_ID__() {
 		prefs__MODULE_ID__ = new _IG_Prefs(__MODULE_ID__);
 		msg.createDismissibleMessage("Days Since Plus has been updated recently...Don't worry, no data lost.");
-		msg.createDismissibleMessage("I will take care of the ugly sorting arrows soon. :P");
 		loadReminders__MODULE_ID__();			
 	}
 		
 	function loadReminders__MODULE_ID__() {
-		var reminders = prefs__MODULE_ID__.getString("reminders");
-		
-		reminders__MODULE_ID__ = [];
-		
+		var reminders = prefs__MODULE_ID__.getString("reminders");		
+		reminders__MODULE_ID__ = [];		
 		if (reminders != "") {
 			reminders__MODULE_ID__ = reminders.parseJSON(function (key, value) {
 			        return key == 'lastreset' ? new Date(parseInt(value)) : value;
 			    });
 		}
-		sortReminder__MODULE_ID__(1); // auto sort reminders by dayssince
+		validateRemindersData__MODULE_ID__()	// validate reminders data 
+												// since in a previous version, sum & lastreset are calculated wrong...
+		updateFrequency__MODULE_ID__();		// track frequency
+		reminders__MODULE_ID__.sort(sortRemindersAscending);		// sort reminders by frequency, ascending
+		
 		createTable__MODULE_ID__();
 	}
 
@@ -80,21 +93,21 @@
 		var lastreset = getDateAgo(now, daysago);
 		var counter = 1;
 		var sum = 0;		
+		var frequency = 0.0;	// for the newly added iterm
 		
 		_gel("newReminderInput__MODULE_ID__").value = "";
+		_gel("newDaysSinceInput__MODULE_ID__").value = "0";
+		
 		if (description == "")
 			return false;
-			
+		
+		// add new reminder to reminder array
 		reminders__MODULE_ID__[reminders__MODULE_ID__.length] =
-			{"description": description, "lastreset": lastreset, "counter": counter, "sum": sum};
+			{"description": description, "lastreset": lastreset, "counter": counter, "sum": sum, "frequency": frequency};
 		
+		reminders__MODULE_ID__.sort(sortRemindersAscending);		// sort reminders by frequency, ascending
+		saveReminders__MODULE_ID__();		// createTable has done in saveReminders()
 		
-		sortReminder__MODULE_ID__(1); // auto sort reminders by dayssince
-		
-		saveReminders__MODULE_ID__();
-		// createTable__MODULE_ID__();
-		
-		document.newReminderForm__MODULE_ID__.newDaysSinceInput__MODULE_ID__.value = "0";
 		return true;
 	}
 
@@ -105,18 +118,16 @@
 		                                      reminders__MODULE_ID__.length);
 		
 		reminders__MODULE_ID__ = beginning.concat(end);
-		sortReminder__MODULE_ID__(1); // auto sort reminders by dayssince
-		saveReminders__MODULE_ID__();
-		// createTable__MODULE_ID__();
+		reminders__MODULE_ID__.sort(sortRemindersAscending);		// sort reminders by frequency, ascending		
+		saveReminders__MODULE_ID__();		// createTable has done in saveReminders()
 	}
 	
 	function resetReminder__MODULE_ID__(number) 
 	{		
+		// calculate days since last reset
 		var now = new Date();
 		var lastreset = reminders__MODULE_ID__[number].lastreset;
 		var dayssince = calendarDaysSince(lastreset);
-		// msg.createDismissibleMessage("dayssince = ");
-		// msg.createDismissibleMessage(dayssince);
 		
 		var row = getRow__MODULE_ID__(number);
 		var col = getCol__MODULE_ID__(row, 0);
@@ -125,83 +136,87 @@
 		reminders__MODULE_ID__[number].lastreset = now;
 		reminders__MODULE_ID__[number].counter ++;
 		reminders__MODULE_ID__[number].sum += dayssince;
-		sortReminder__MODULE_ID__(1); // auto sort reminders by dayssince
-		saveReminders__MODULE_ID__();
-		// createTable__MODULE_ID__();
+		reminders__MODULE_ID__[number].frequency = calculateFrequency(reminders__MODULE_ID__[number]);
+		reminders__MODULE_ID__.sort(sortRemindersAscending);		// sort reminders by frequency, ascending
+		saveReminders__MODULE_ID__();		// createTable has done in saveReminders()
 	}
 
-	function rowClass__MODULE_ID__(number) {
+	function rowClass__MODULE_ID__(number) 
+	{
 		if (number % 2 != 0)
 			return " class=odd__MODULE_ID__ ";
 		else
 			return " class=even__MODULE_ID__ ";
 	}	
 	
-	function getRow__MODULE_ID__(number) {
+	function getRow__MODULE_ID__(number) 
+	{
 		return _gel("row" + number + "__MODULE_ID__");
 	}
 
-	function getCol__MODULE_ID__(row, index) {
+	function getCol__MODULE_ID__(row, index) 
+	{
 		return row.childNodes.item(index);
 	}
 
 	//== create table == 
 	function createTable__MODULE_ID__() 
-	{
-		var html = createSortRow__MODULE_ID__();
+	{	
+		var html = "<table cellspacing=2px id=remindersTable__MODULE_ID__>";
 		
-		html = html + "<table cellspacing=2px id=remindersTable__MODULE_ID__>";
-		
-		for (i = 0; i < reminders__MODULE_ID__.length; i++) {
+		for (i = 0; i < reminders__MODULE_ID__.length; i++) 
+		{
 			if (reminders__MODULE_ID__[i] == null)
 				break;
-			
-			var description = reminders__MODULE_ID__[i].description;
-			var lastreset = reminders__MODULE_ID__[i].lastreset;
-			var frequency = displayFrequency(reminders__MODULE_ID__[i]);		
-			
-			html = html + createRow__MODULE_ID__(i, description, lastreset, frequency);
+				
+			html = html + createRow__MODULE_ID__(i, reminders__MODULE_ID__[i]);
 		}
 		
 		html = html + "</table>";
 		
 		_gel("remindersDiv__MODULE_ID__").innerHTML = html;
 		_IG_AdjustIFrameHeight();
-	}
-		
-	function createSortRow__MODULE_ID__()
-	{
-		var img = _IG_GetImageUrl('http://dayssinceplus.googlecode.com/svn/trunk/sort.gif');
-		var html = "<p><a href=\"javascript:onSortReminder__MODULE_ID__(1)\"" +			
-				"<img" + " src=\"" + img + "\">" + 
-				"</a>    <a href=\"javascript:onSortReminder__MODULE_ID__(2)\"" +
-				"<img" + " src=\"" + img + "\">" + 
-				"</a></p>";
-		return html;
-	}
+	}		
 	
-	function createRow__MODULE_ID__(number, description, lastreset, frequency) 
-	{
+	function createRow__MODULE_ID__(number, reminder) 
+	{		
+		var description = reminder.description;
+		var lastreset = reminder.lastreset;
+		var frequency = reminder.frequency;		
+		
 		var now = new Date();
 		var dayssince = calendarDaysSince(lastreset);
 		
+		var overdue;
+		if (frequency == 0)
+			overdue = false;
+		else
+			overdue = (dayssince > frequency) ? true : false;
+		
 		var html =
 			"<tr id=\"row" + number + "__MODULE_ID__\"" +
-			rowClass__MODULE_ID__(number) + ">" +
-			"<td class=dayssince_ds__MODULE_ID__><div class=dayssince_ds__MODULE_ID__>" + 
-			dayssince +
-			"</div></td>" +
-			"<td class=description_td__MODULE_ID__><span class=description_ds__MODULE_ID__>" +
-			_hesc(description) +
-			"</span></td>" +
-			"<td class=frequency_td__MODULE_ID__><span class=frequency_ds__MODULE_ID__>" +
-			frequency +
-			"</span></td>" +
-			"<td>" +
-			createReset__MODULE_ID__(number) +
-			createDelete__MODULE_ID__(number) +
-			"</td>" +
-			"</tr>";		
+			rowClass__MODULE_ID__(number) + ">";
+		if (overdue)
+		{
+			html = html + "<td class=dayssince_ds__MODULE_ID__><div class=dayssince_ds_overdue__MODULE_ID__>" + 
+					dayssince + "</div></td>" +
+					"<td class=description_td__MODULE_ID__><span class=description_ds_overdue__MODULE_ID__" +
+					" onmouseover=\"showFrequency__MODULE_ID__(" + number + ")\" onmouseout=\"hideFrequency__MODULE_ID__()\">" + 
+					_hesc(description) + "</span></td>";
+		}
+		else
+		{
+			html = html + "<td class=dayssince_ds__MODULE_ID__><div class=dayssince_ds__MODULE_ID__>" + 
+					dayssince + "</div></td>" +
+					"<td class=description_td__MODULE_ID__><span class=description_ds__MODULE_ID__" +
+					" onmouseover=\"showFrequency__MODULE_ID__(" + number + ")\" onmouseout=\"hideFrequency__MODULE_ID__()\">" + 
+					_hesc(description) + "</span></td>";
+		}
+		html = html + "<td>" +
+				createReset__MODULE_ID__(number) +
+				createDelete__MODULE_ID__(number) +
+				"</td></tr>";		
+		
 		return html;
 	}
 
@@ -228,145 +243,61 @@
 	}
 	//==========
 	
-	//== sort == 
-	// onclick sort icons
-	function onSortReminder__MODULE_ID__(type)
+	//== mouse over/leave ==
+	function showFrequency__MODULE_ID__(number)
 	{
-		sortReminder__MODULE_ID__(type);
-		ascent__MODULE_ID__ = !ascent__MODULE_ID__;		
-		createTable__MODULE_ID__();
+		// generate html 
+		var html;
+		var reminder = reminders__MODULE_ID__[number];
+		if (reminder.counter == 1)
+			html = "__MSG_nofrequencyrecord__";
+		else
+		{
+			html = "__MSG_frequency__" + displayFrequency(reminder);
+			if (reminder.frequency > 1)
+				html = html + "__MSG_days__";
+			else
+				html = html + "__MSG_day__";
+		}
+		
+		// decide show position		
+		var frequencyDiv = _gel("frequencyDiv__MODULE_ID__");
+		frequencyDiv.innerHTML = html;					
 	}
 	
-	// sort reminder array
-	// by dayssince or by frequency
-	function sortReminder__MODULE_ID__(type)
+	function hideFrequency__MODULE_ID__()
 	{
-		var i;
-		var length = reminders__MODULE_ID__.length;
-		if (length > 0)
-		{		
-			// generate reference array
-			if (type == 1)
-			// sort by dayssince
-			{
-				
-				var refarray = new Array();
-				for (i = 0; i < length; i ++)
-				{
-					var lastreset = reminders__MODULE_ID__[i].lastreset;
-					refarray[i] = calendarDaysSince(lastreset);
-				}			
-			}
-			else if (type == 2)
-			// sort by frequency
-			{
-				var refarray = new Array();
-				for (i = 0; i < length; i ++)
-				{
-					refarray[i] = calculateFrequency(reminders__MODULE_ID__[i]);
-				}			
-			}
-			else
-				return;
-			
-			bubbleSort(refarray, reminders__MODULE_ID__, ascent__MODULE_ID__);							
-		}	
+		_gel("frequencyDiv__MODULE_ID__").style.display = "none";
 	}
-
-	//sort target array by  bubble sort algorithm in terms of the reference array
-	// refArray, reference array
-	// targetArray, target array
-	function bubbleSort(refarray, targetarray, ascent)
-	{		
-		var i, j, holder;
-		var exchange;	// swap flag
-		var length = refarray.length;
-		for (i = 0; i < length; i ++)
-		{
-			exchange = false;	
-			for (j = length - 1; j >= i; j --)
-			{
-				if ((ascent && refarray[j + 1] < refarray[j]) || (!ascent && refarray[j + 1] > refarray[j]))
-				// swap both refArray elements and targetArray elements
-				{
-					holder = refarray[j + 1];
-					refarray[j + 1] = refarray[j];
-					refarray[j] = holder;
-					holder = targetarray[j + 1];
-					targetarray[j + 1] = targetarray[j];
-					targetarray[j] = holder;
-					exchange = true;
-				}			
-			}
-			if (!exchange)
-				return;
-		}
-	} 
 	//==========
 	
-	//== stat ==
-	// return frequency in floot
-	function calculateFrequency(reminder)
-	{
-		var sum = parseInt(reminder.sum);
-		var counter = parseInt(reminder.counter);	
-		var frequency = sum / counter;			
-		return frequency;
-	}
-
-	// display frequency in integer days, if frequency < 1 day, display string "<1"	
-	// display frequency only counter > 1, i.e., after reset at least once. 
-	function displayFrequency(reminder)
-	{
-		var frequency = calculateFrequency(reminder);
-		var counter = parseInt(reminder.counter);
-		if (counter == 1)
-			frequency = "";
+	//== sort == 
+	// softing function for sorting reminders array
+	// by frequency, ascending
+	function sortRemindersAscending(a,b) {
+		var x = a.frequency;
+		var y = b.frequency;
+		
+		// leave no frequency reminders (counter = 1) at the bottom
+		if (x == 0)
+			return 1; // x > y, for any y, if x == 0
+		else if (y == 0)
+			return -1;	// x < y, for any x, if y == 0
 		else
-		{					
-			frequency = Math.floor(frequency);
-			if (frequency == 0)
-				frequency = "<1";			
-		}
-		return frequency;
+		{
+			return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+		}		
 	}
 	//==========
 	
 	//== date math ==
-	var minutes = 1000*60;
-	var hours = minutes*60;
-	var days = hours*24;
-	var years = days*365;
-		
-	// returns integer with calendar days since the startDate, midnight to midnight
-	// startDate is a Date object. Assumes startDate is in the past.
-	function calendarDaysSince(startdate) 
-	{
-		var nowdate = new Date();
-		
-		// Roll clocks back to midnight
-		var start = new Date(startdate.getYear(), startdate.getMonth(), startdate.getDate());
-		var now = new Date(nowdate.getYear(), nowdate.getMonth(), nowdate.getDate());
-		
-		return Math.ceil((now.getTime()-start.getTime())/days);
-	}
-
-	// returns Date object, which is daysAfter after startDate (Date object)
-	function getDateAfter(startdate, daysafter)
-	{
-		var enddate = new Date();
-		enddate.setTime(startdate.getTime() + days * daysafter);
-		return enddate;
-	}
-
-	// returns Date object, which is daysBefore before endDate (Date object)
-	function getDateAgo(enddate, daysago)
-	{
-		var startdate = new Date();
-		startdate.setTime(enddate.getTime() - days * daysago);
-		return startdate;
-	}		
+	// datemath.js
 	//==========
+	
+	//== stat ==
+	// stat.js
+	//==========
+	
 	_IG_Analytics("UA-450084-2", "/dayssinceplus");
 	
 </script>
@@ -388,31 +319,51 @@
 		width: 90%;
 	}
 	
-	td.frequency_td__MODULE_ID__ {
-		text-align: center;
-		width: 10%;
-	}
-	
 	span.description_ds__MODULE_ID__ {
 
 		font-family: arial, sans-serif;
 		font-size: small;
 		margin: 0 auto;
 		padding: 0 5px 0 5px;
-	}
-	
-	span.frequency_ds__MODULE_ID__ {
+	}	
+	span.description_ds_overdue__MODULE_ID__
+	{
 		font-family: arial, sans-serif;
 		font-size: small;
 		margin: 0 auto;
 		padding: 0 5px 0 5px;
-		color: #ff0000;
+		color: #FF0000;
 	}
 	
 	div.dayssince_ds__MODULE_ID__ {
 		border: 2px solid #00008B;
 		background-color: #00BFFF;
 		color: #00008B;
+		font-family: arial, san-serif;
+		font-size: normal;
+		font-weight: bold;
+		padding: 0px 2px 0px 2px;
+		margin: 0 2px;
+		float: right;
+	}
+	
+	div.dayssince_ds_overdue__MODULE_ID__
+	{
+		border: 2px solid #00008B;
+		background-color: #FF0000;
+		color: #0000FF;
+		font-family: arial, san-serif;
+		font-size: normal;
+		font-weight: bold;
+		padding: 0px 2px 0px 2px;
+		margin: 0 2px;
+		float: right;
+	}
+	
+	div.frequency_ds__MODULE_ID__
+	{
+		background-color: #FFB6C1;
+		color: #FFFFFF;
 		font-family: arial, san-serif;
 		font-size: normal;
 		font-weight: bold;
@@ -482,6 +433,7 @@
 	</table>	
 </form>
 <div id="remindersDiv__MODULE_ID__"></div>
+<div id="frequencyDiv__MODULE_ID__" class=frequency_ds__MODULE_ID__></div>
 ]]>
 </Content>
 </Module>
