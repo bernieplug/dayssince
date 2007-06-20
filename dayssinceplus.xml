@@ -19,7 +19,7 @@
 	author_link="http://sg71cherub.spaces.live.com"
 >
 	<Locale messages="http://dayssinceplus.googlecode.com/svn/trunk/ALL_ALL.xml"/>
-	<Locale lang="zh-cn" messages="http://dayssinceplus.googlecode.com/svn/trunk/zh_cn_ALL.xml"/> 
+	<Locale lang="zh-CN" messages="http://dayssinceplus.googlecode.com/svn/trunk/zh_cn_ALL.xml"/> 
 	<Locale lang="zh-tw" messages="http://dayssinceplus.googlecode.com/svn/trunk/zh_tw_ALL.xml"/> 
 	<Require feature="analytics"/>
 	<Require feature="setprefs"/>
@@ -33,7 +33,6 @@
 
 <script type="text/javascript" src = "http://dayssinceplus.googlecode.com/svn/trunk/json.js"></script>
 <script type="text/javascript" src = "http://dayssinceplus.googlecode.com/svn/trunk/datemath.js"></script>
-<script type="text/javascript" src = "http://dayssinceplus.googlecode.com/svn/trunk/stat.js"></script>
 
 <script type="text/javascript">
 	
@@ -56,7 +55,7 @@
 	
 	function onLoad__MODULE_ID__() {
 		prefs__MODULE_ID__ = new _IG_Prefs(__MODULE_ID__);
-		msg.createDismissibleMessage("Days Since Plus has been updated recently...Don't worry, no data lost.");
+		msg.createDismissibleMessage("__MSG_systemmessage__");
 		loadReminders__MODULE_ID__();			
 	}
 		
@@ -254,7 +253,7 @@
 		else
 		{
 			html = "__MSG_frequency__" + displayFrequency(reminder);
-			if (reminder.frequency > 1)
+			if (reminder.frequency > 2)
 				html = html + "__MSG_days__";
 			else
 				html = html + "__MSG_day__";
@@ -262,12 +261,19 @@
 		
 		// decide show position		
 		var frequencyDiv = _gel("frequencyDiv__MODULE_ID__");
-		frequencyDiv.innerHTML = html;					
+		frequencyDiv.style.display = "block";
+		frequencyDiv.innerHTML = html;
+		
+		// adjust gadget hight if necessary
+		_IG_AdjustIFrameHeight();
 	}
 	
 	function hideFrequency__MODULE_ID__()
 	{
 		_gel("frequencyDiv__MODULE_ID__").style.display = "none";
+		
+		// adjust gadget hight if necessary
+		_IG_AdjustIFrameHeight();
 	}
 	//==========
 	
@@ -295,7 +301,60 @@
 	//==========
 	
 	//== stat ==
-	// stat.js
+	// validate reminders data
+	// for counter = 1, sum = 0 and frequency = 0;
+	// if not so, i.e., if (counter == 1 && sum > 0), lastreset = lastreset - sum;
+	function validateRemindersData__MODULE_ID__()
+	{
+		var length = reminders__MODULE_ID__.length;
+		var i;
+		for (i = 0; i < length; i ++)
+		{			
+			var counter = reminders__MODULE_ID__[i].counter;
+			var sum = reminders__MODULE_ID__[i].sum;
+			if (counter == 1 && sum > 0)
+			{
+				reminders__MODULE_ID__[i].lastreset = getDateAgo(reminders__MODULE_ID__[i].lastreset, sum);
+				reminders__MODULE_ID__[i].sum = 0;
+				reminders__MODULE_ID__[i].frequency = 0;
+			}
+		}
+	}
+
+	// update frequency for all reminders
+	function updateFrequency__MODULE_ID__()
+	{
+		var length = reminders__MODULE_ID__.length;
+		var i;
+		for (i = 0; i < length; i ++)
+			reminders__MODULE_ID__[i].frequency = calculateFrequency(reminders__MODULE_ID__[i]);			
+	}
+
+	// return frequency in floot
+	function calculateFrequency(reminder)
+	{
+		var sum = parseInt(reminder.sum);
+		var counter = parseInt(reminder.counter);	
+		var frequency = sum / counter;			
+		return frequency;
+	}
+
+	// display frequency in integer days, if frequency < 1 day, display string "<1"	
+	// display frequency only counter > 1, i.e., after reset at least once. 
+	function displayFrequency(reminder)
+	{
+		var frequency = calculateFrequency(reminder);
+		var counter = parseInt(reminder.counter);
+		if (counter == 1)
+			frequency = "";
+		else
+		{					
+			frequency = Math.floor(frequency);
+			if (frequency == 0)
+				frequency = "<1";			
+		}
+		return frequency;
+	}	
 	//==========
 	
 	_IG_Analytics("UA-450084-2", "/dayssinceplus");
@@ -370,6 +429,7 @@
 		padding: 0px 2px 0px 2px;
 		margin: 0 2px;
 		float: right;
+		display: none;
 	}
 	
 	img.delete__MODULE_ID__ {
