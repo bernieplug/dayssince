@@ -1,11 +1,11 @@
 ﻿<messagebundle>
   <msg name="Add">添加</msg> 
-  <msg name="dayssince">逝者如斯</msg>
+  <msg name="dayssince">天，自从上次</msg>
   <msg name="dayssinceplus">逝者如斯</msg>
   <msg name="counter">计数器</msg>
   <msg name="description">上次给绿植浇水是几天前？去健身呢？给孩子洗澡呢？或者和狐朋狗友出去喝酒呢？用这个谷歌小工具作为一种时间管理工具、提醒或者计数器。</msg>
   <msg name="yourreminders">记录</msg>
-  <msg name="version">�汾</msg>
+  <msg name="version">版本</msg>
   <msg name="daysuntil">迫在眉睫</msg>
   <msg name="nofrequencyrecord">无频率记录因为计数器等于1</msg>
   <msg name="day">天一次</msg>
