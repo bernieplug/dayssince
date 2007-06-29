@@ -26,7 +26,7 @@
 </ModulePrefs>
 <UserPref name="reminders" display_name="__MSG_yourreminders__" datatype="string" default_value="[]"></UserPref>
 <UserPref name="version" display_name="__MSG_dayssince__ __MSG_version__" datatype="string" default_value=" $Rev$ "></UserPref>
-<UserPref name="msg1" datatype="hidden" default_value="0"></UserPref>
+<UserPref name="msg1" datatype="hidden" default_value="1"></UserPref>
 <Content type="html">
 <![CDATA[
 
@@ -76,7 +76,8 @@
 
 	function saveReminders__MODULE_ID__(){
 		prefs__MODULE_ID__.set("reminders", reminders__MODULE_ID__.toJSONString());
-		loadReminders__MODULE_ID__();
+		//loadReminders here if you want a sanity check that prefs.set worked
+		//loadReminders__MODULE_ID__();
 	}
 
 	function addReminder__MODULE_ID__(description, daysago_string) {
@@ -98,7 +99,9 @@
 			
 		saveReminders__MODULE_ID__();
 		createTable__MODULE_ID__();
-		return true;
+		// return false to "fail" submit - thus stay on the current page.
+		// We still have saved the changed data here in our JS code
+		return false;
 	}
 
 	function deleteReminder__MODULE_ID__(number) {
@@ -289,16 +292,10 @@
 					value="0" type="text"> __MSG_dayssince__</p></td>
 			<td style='width:100%' >
 				<input id="newReminderInput__MODULE_ID__" type="text"
-					style='width:100%'
- />
+					style='width:100%' />
 			</td>
 			<td>
-				<input type='button' value="__MSG_Add__"
-							onclick = "javascript:addReminder__MODULE_ID__(
-							document.newReminderForm__MODULE_ID__.
-							newReminderInput__MODULE_ID__.value,
-							document.newReminderForm__MODULE_ID__.
-							newDaysSinceInput__MODULE_ID__.value)" />
+				<input type='submit' value="__MSG_Add__"/>
 			</td>
 		</tr>
 	</table>
