@@ -165,6 +165,8 @@
 	function createRow__MODULE_ID__(number, description, lastreset) {
 		var now = new Date();
 		var dayssince = calendarDaysSince(lastreset);
+		description = _hesc(description);
+		description = description.replace(/(\S{8,}?)/g, "$1<span class='break__MODULE_ID__'>&nbsp;</span>");
 		
 		var html =
 			"<tr id=\"row" + number + "__MODULE_ID__\"" +
@@ -173,7 +175,7 @@
 			dayssince +
 			"</div></td>" +
 			"<td class=description_td__MODULE_ID__><span class=description_ds__MODULE_ID__>" +
-			_hesc(description) +
+			description +
 			"</span></td>" +
 			"<td>" +
 			createReset__MODULE_ID__(number) +
@@ -275,6 +277,13 @@
 		border: 0;
 		margin: 0;
 		padding: 0;
+	}
+	
+	span.break__MODULE_ID__ {
+	font-size: 1px;
+	line-height: 1px;
+	float: right !important;
+	float: none;
 	}
 	
 </style>
