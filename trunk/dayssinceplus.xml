@@ -42,7 +42,7 @@
 								// data structure:
 								// (array of hashes with 'description', 'lastreset', 'counter', 'sum' & 'frequency')
 								// 'description' is string
-								// 'lastreset' is Date
+								// 'lastreset' is Date (in miliseconds since 1970 format)
 								// 'counter' is integer
 								// 'sum' is integer
 								// 'frequency' is float									
