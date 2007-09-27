@@ -1,0 +1,10 @@
+<messagebundle>
+	<msg name="Add">Agregar</msg>  
+	<msg name="dayssince">días transcurridos desde que</msg> 
+	<msg name="dayssinceplus"> Días Transcurridos Plus</msg> 
+	<msg name="directorytitle">Contador de días transcurridos</msg>  
+	<msg name="description">¿Hace cuántos días regó sus plantas? ¿Le dio servicio al carro? ¿Bañó a esos niños sucios? ¿O quizá cuándo fue la última vez que tomó unos tragos? Use esto como un tipo de herramienta para la administración del tiempo, como recordatorio o como contador .</msg> 
+	<msg name="yourreminders">Sus recordatorios</msg>  
+	<msg name="version">versión</msg> 
+	<msg name="daysuntil"> Días que faltan</msg>
+</messagebundle>
