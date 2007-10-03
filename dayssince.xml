@@ -19,6 +19,10 @@
 	author_link="http://leancode.com/"
 >
 	<Locale messages="http://dayssince.googlecode.com/svn/trunk/ALL_ALL.xml"/>
+	<Locale lang="zh-CN" messages="http://dayssince.googlecode.com/svn/trunk/zh_cn_ALL.xml"/> 
+	<Locale lang="zh-tw" messages="http://dayssince.googlecode.com/svn/trunk/zh_tw_ALL.xml"/>
+	<Locale lang="es" messages="http://dayssince.googlecode.com/svn/trunk/es_ALL.xml"/>
+	<Locale lang="pt-BR" messages="http://dayssince.googlecode.com/svn/trunk/pt_br_ALL.xml"/>
 	<Require feature="analytics"/>
 	<Require feature="setprefs"/>
 	<Require feature="dynamic-height"/>
