@@ -7,4 +7,7 @@
 	<msg name="yourreminders">Seus Lembradores </msg>  
 	<msg name="version">versão</msg> 
 	<msg name="daysuntil"> Dias Até</msg>
+  <msg name="nospace">Not Saved. Hit iGoogle space limit</msg>
+  <msg name="newsister">NEW sister widget for upcoming events --</msg>
+  <msg name="daysuntil">Days Until</msg>
 </messagebundle>
