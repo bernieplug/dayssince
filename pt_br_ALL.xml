@@ -8,6 +8,8 @@
 	<msg name="version">versão</msg> 
 	<msg name="daysuntil"> Dias Até</msg>
   <msg name="nospace">Not Saved. Hit iGoogle space limit</msg>
-  <msg name="newsister">NEW sister widget for upcoming events --</msg>
   <msg name="daysuntil">Days Until</msg>
+  <msg name="newrelated">NEW related widget</msg>
+  <msg name="average">Average</msg>
+  <msg name="days">days</msg>
 </messagebundle>
