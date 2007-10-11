@@ -16,4 +16,5 @@
   <msg name="newrelated">NEW related widget</msg>
   <msg name="average">Average</msg>
   <msg name="days">days</msg>
+  <msg name="resets">resets</msg>
 </messagebundle>
