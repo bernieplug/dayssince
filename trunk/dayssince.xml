@@ -166,7 +166,7 @@ var daysSince__MODULE_ID__ = function () {
 			var mini = new _IG_MiniMessage(__MODULE_ID__);
 			var lost = reminders.pop();
 		
-			mini.createDismissibleMessage(lost.n + ": " + "__MSG_nospace__");
+			mini.createDismissibleMessage(lost[DESC] + ": " + "__MSG_nospace__");
 		}
 	}
 	
