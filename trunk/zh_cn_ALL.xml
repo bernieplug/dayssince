@@ -14,7 +14,6 @@
   <msg name="systemmessage">“逝者如斯”刚刚升级……放心，数据不会丢失。</msg>
   <msg name="nospace">Not Saved. Hit iGoogle space limit</msg>
   <msg name="newrelated">NEW related widget</msg>
-  <msg name="average">Average</msg>
-  <msg name="days">days</msg>
+  <msg name="average">>平均</msg>
   <msg name="resets">resets</msg>
 </messagebundle>

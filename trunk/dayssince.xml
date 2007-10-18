@@ -111,9 +111,16 @@ var daysSince__MODULE_ID__ = function () {
 	
 	// a,b must be reminders
 	function sortOverdueDescending(a,b) {
-		// days since last reset - average days between resets
-		var x = calendarDaysSince(b[DATE]) - b[AVG];
-		var y = calendarDaysSince(a[DATE]) - a[AVG];
+	
+		// days since last reset - average days between resets. Special case if no resets.
+		function daysOverdue(n) {
+			var x = calendarDaysSince(n[DATE]);
+			
+			return x - ((n[CNT] == 0) ? (36500+(x*2)) : n[AVG]); 
+		}
+		
+		var x = daysOverdue(b);
+		var y = daysOverdue(a);
 
 		return ((x < y) ? -1 : ((x > y) ? 1 : 0));
 	}
@@ -332,9 +339,9 @@ _IG_Analytics("UA-99119-16", "/dayssince");
 	
 </script>
 
-<div id = "body_ds__MODULE_ID__" style="overflow: auto"; padding: 0; margin: 0; border: 0;>
-	<form name = "newReminderForm__MODULE_ID__"
-		style = "padding: 0; margin: 0;"
+<div id = "body_ds__MODULE_ID__" style="overflow: auto; padding: 0; margin: 0; border: 0;">
+	<form name="newReminderForm__MODULE_ID__"
+		style="padding: 0; margin: 0;"
 		onsubmit="return daysSince__MODULE_ID__.addReminder(
 		document.newReminderForm__MODULE_ID__.
 		newReminderInput__MODULE_ID__.value,
