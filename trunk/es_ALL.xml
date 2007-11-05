@@ -7,10 +7,10 @@
 	<msg name="yourreminders">Sus recordatorios</msg>  
 	<msg name="version">versión</msg> 
 	<msg name="daysuntil"> Días que faltan</msg>
-  <msg name="nospace">Not Saved. Hit iGoogle space limit</msg>
-  <msg name="daysuntil">Days Until</msg>
-  <msg name="newrelated">NEW related widget</msg>
-  <msg name="average">Average</msg>
-  <msg name="days">days</msg>
-  <msg name="resets">resets</msg>
+  <msg name="nospace">No se almacenan. iGoogle límite de almacenamiento</msg>
+  <msg name="daysuntil">Días que faltan</msg>
+  <msg name="newrelated">Nueva relacionados gadgets</msg>
+  <msg name="average">Promedio</msg>
+  <msg name="days">días</msg>
+  <msg name="resets">restablece</msg>
 </messagebundle>

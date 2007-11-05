@@ -12,8 +12,8 @@
   <msg name="days">天一次</msg>
   <msg name="frequency">平均</msg>
   <msg name="systemmessage">“逝者如斯”剛剛升級……放心，數據不會丟失。</msg>
-  <msg name="nospace">Not Saved. Hit iGoogle space limit</msg>
-  <msg name="newrelated">NEW related widget</msg>
+  <msg name="nospace">沒有儲存。擊中igoogle容量極限</msg>
+  <msg name="newrelated">新的相關玩意兒</msg>
   <msg name="average">>平均</msg>
-  <msg name="resets">resets</msg>
+  <msg name="resets">重置</msg>
 </messagebundle>
