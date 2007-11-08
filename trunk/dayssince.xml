@@ -250,7 +250,7 @@ var daysSince__MODULE_ID__ = function () {
 		var start = new Date(startDate.getYear(), startDate.getMonth(), startDate.getDate());
 		var now = new Date(nowDate.getYear(), nowDate.getMonth(), nowDate.getDate());
 
-		return Math.ceil((now.getTime()-start.getTime())/days);
+		return Math.round((now.getTime()-start.getTime())/days);
 	}
 	
 	function createDelete(number) {
