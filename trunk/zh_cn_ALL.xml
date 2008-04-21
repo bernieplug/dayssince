@@ -16,4 +16,5 @@
   <msg name="newrelated">新的相关玩意儿</msg>
   <msg name="average">>平均</msg>
   <msg name="resets">重置</msg>
+  <msg name="defaultreminders"></msg>
 </messagebundle>

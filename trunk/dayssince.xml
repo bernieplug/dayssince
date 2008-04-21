@@ -7,6 +7,7 @@
 	description="__MSG_description__"
 	scrolling="true"
 	singleton="false"
+	category="tools"
 	author="Bernie T."
 	author_email="widgets@leancode.com"
 	author_affiliation="Leancode Inc."
@@ -29,7 +30,6 @@
 	<Require feature="minimessage" /> 
 </ModulePrefs>
 <UserPref name="reminders" display_name="__MSG_yourreminders__" datatype="string" default_value="[]"></UserPref>
-<UserPref name="ver" display_name="__MSG_dayssince__ __MSG_version__" datatype="string" default_value=""></UserPref>
 <UserPref name="msg1" datatype="hidden" default_value="1"></UserPref>
 <Content type="html">
 <![CDATA[
@@ -104,6 +104,11 @@ var daysSince__MODULE_ID__ = function () {
 		upgradeSchema();
 		decodeDates();
 		
+		if (reminders.length == 0)
+		{
+			loadDefaultReminders();
+		}
+		
 		if (schemaUpgraded) saveReminders();
 		
 		createTable();
@@ -151,13 +156,33 @@ var daysSince__MODULE_ID__ = function () {
 		}
 	}
 	
+	function loadDefaultReminders() {
+		var json = "[__MSG_defaultreminders__]";
+		json = json.replace(/&quot;/g,'"');
+		var newr = [];
+		
+		var default_array = json.parseJSON();
+		var d = new Date();
+		
+		for (var i = 0; i < default_array.length; i++) {
+			newr.push([
+				default_array[i],
+				d,
+				0,
+				0,
+			]);
+		}
+		
+		reminders = newr;
+		schemaUpgraded = true;
+	}
+	
 	function saveReminders() {
 
 		// as of Oct 2007, Google's behavior appears to be this:
 		// if the saved preference string is too long for them 
 		// (currently documented to be 2K chars)
 		// the save will often work (!), but getString("reminders") will return "[]"
-		// (Google appears to intentionally return a valid but empty JSON array!)
 		// And a get() after set() will return the cached value, even if it's too 
 		// large -- but future refreshes of the page will return "[]"
 		// So we have to enforce the 2K limit here.
@@ -168,7 +193,7 @@ var daysSince__MODULE_ID__ = function () {
 		// Approx 200 chars of overhead in the rest of Google's HTTP GET
 		// requests with all the preferences for our gadget
 		if (encoded.length < (2048 - 200)) {
-			igPrefs.set("reminders", json, "ver", "$Rev$");
+			igPrefs.set("reminders", json);
 		} else {
 			var mini = new _IG_MiniMessage(__MODULE_ID__);
 			var lost = reminders.pop();
