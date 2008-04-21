@@ -13,4 +13,5 @@
   <msg name="average">Promedio</msg>
   <msg name="days">días</msg>
   <msg name="resets">restablece</msg>
+  <msg name="defaultreminders">"Abrígate en lugar de encender la calefacción","Utiliza bombillas halógenas de bajo consumo","Comparte coche para ir a trabajar","Dona la ropa usada","Dúchate en lugar de bañarte","Desplázate en bicicleta en lugar de ir en coche","Compra comida sin empaquetar","Compra alimentos de temporada","Mantene la presión de las ruedas","Conduce con marchas largas","Lava la ropa con agua fría","Evita comprar productos con demasiado embalaje","Comparte tus libros","Recicla"</msg>
 </messagebundle>

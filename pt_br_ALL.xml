@@ -12,4 +12,5 @@
   <msg name="average">Média</msg>
   <msg name="days">dias</msg>
   <msg name="resets">Zera</msg>
+  <msg name="defaultreminders"></msg>
 </messagebundle>
