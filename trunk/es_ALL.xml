@@ -3,7 +3,7 @@
 	<msg name="dayssince">días transcurridos desde que</msg> 
 	<msg name="dayssinceplus"> Días Transcurridos Plus</msg> 
 	<msg name="directorytitle">Contador de días transcurridos</msg>  
-	<msg name="description">¿Hace cuántos días regó sus plantas? ¿Le dio servicio al carro? ¿Bañó a esos niños sucios? ¿O quizá cuándo fue la última vez que tomó unos tragos? Use esto como un tipo de herramienta para la administración del tiempo, como recordatorio o como contador .</msg> 
+	<msg name="description"> ¿Cuándo fue la última vez que reciclaste? ¿Te has acordado de revisar la presión de las ruedas de tu coche? Con este gadget tendrás un control diario de las actividades medio ambientales que estás haciendo y aquellas que puedes poner en práctica para aportar tu grano de arena a la hora de preservar tu entorno.</msg> 
 	<msg name="yourreminders">Sus recordatorios</msg>  
 	<msg name="version">versión</msg> 
 	<msg name="daysuntil"> Días que faltan</msg>
@@ -13,5 +13,5 @@
   <msg name="average">Promedio</msg>
   <msg name="days">días</msg>
   <msg name="resets">restablece</msg>
-  <msg name="defaultreminders">"Abrígate en lugar de encender la calefacción","Utiliza bombillas halógenas de bajo consumo","Comparte coche para ir a trabajar","Dona la ropa usada","Dúchate en lugar de bañarte","Desplázate en bicicleta en lugar de ir en coche","Compra comida sin empaquetar","Compra alimentos de temporada","Mantene la presión de las ruedas","Conduce con marchas largas","Lava la ropa con agua fría","Evita comprar productos con demasiado embalaje","Comparte tus libros","Recicla"</msg>
+  <msg name="defaultreminders">"Te abrigas en lugar de encender la calefacc ión","Utilizas bombilla s halógena s de bajo consumo","Compartes coche para ir a trabajar","Donas la ropa usada","Te duchas en lugar de bañarte","Te desplazas en bicicleta en lugar de ir en coche","Compras comida sin empaquetar","Compras alimento s de temporad a","Mantienes la presión de las ruedas","Conduces con marchas largas","Lavas la ropa con agua fría","Evitas comprar producto s con demasiad o embalaje","Compartes tus libros","Reciclas"</msg>
 </messagebundle>
