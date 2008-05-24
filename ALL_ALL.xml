@@ -13,5 +13,5 @@
   <msg name="average">Average</msg>
   <msg name="days">days</msg>
   <msg name="resets">resets</msg>
-  <msg name="defaultreminders">"Put out recycling","Changed clothes rather than use more heat or air","Unplugged appliances not in use","Swapped in an energy-efficient lightbulb","Carpooled","Donated unused items to charity","Showered quickly","Rode a bike instead of driving","Chose a product with the least packaging","Changed house air filters","Chose locally-grown food","Checked tire pressure"</msg>
+  <msg name="defaultreminders">"Carpooled or biked to work","Donated unused items to charity","Watered the plants"</msg>
 </messagebundle>
