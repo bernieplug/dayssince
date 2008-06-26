@@ -1,6 +1,6 @@
 <messagebundle>
 	<msg name="Add">Agregar</msg>  
-	<msg name="dayssince">días transcurridos desde que</msg> 
+	<msg name="dayssince">Días Desde</msg> 
 	<msg name="dayssinceplus"> Días Transcurridos Plus</msg> 
 	<msg name="directorytitle">Contador de días transcurridos</msg>  
 	<msg name="description"> ¿Cuándo fue la última vez que reciclaste? ¿Te has acordado de revisar la presión de las ruedas de tu coche? Con este gadget tendrás un control diario de las actividades medio ambientales que estás haciendo y aquellas que puedes poner en práctica para aportar tu grano de arena a la hora de preservar tu entorno.</msg> 
