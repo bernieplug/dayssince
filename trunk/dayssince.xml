@@ -303,6 +303,10 @@ var daysSince__MODULE_ID__ = function () {
 	return {
 		onLoad : function() {
 			igPrefs = new _IG_Prefs(__MODULE_ID__);
+			var img = _IG_GetImageUrl('http://dayssince.googlecode.com/svn/trunk/add.gif');
+			var html = '<input type="image" src="' + img + '"/>';
+			
+			_gel("submitButton__MODULE_ID__").innerHTML = html;
 			
 			loadReminders();
 			displayMessages();
@@ -372,17 +376,17 @@ _IG_Analytics("UA-99119-16", "/dayssince");
 		newReminderInput__MODULE_ID__.value,
 		document.newReminderForm__MODULE_ID__.
 		newDaysSinceInput__MODULE_ID__.value)">
-		<table id="newReminderForm__MODULE_ID__" cellspacing=2px>
+		<table id="newReminderForm__MODULE_ID__" cellspacing=2px style="width:100%">
 			<tr>
 				<td nowrap>
 					<input size="3" id="newDaysSinceInput__MODULE_ID__" 
 						value="0" type="text">
 						<font size="-1"> __MSG_dayssince__</font></td>
-				<td style='width:100%' >
+				<td style="width: 100%">
 					<input id="newReminderInput__MODULE_ID__" type="text"
 						style='width:100%' />
 				</td>
-				<td>
+				<td id="submitButton__MODULE_ID__">
 					<input type='submit' value="__MSG_Add__"/>
 				</td>
 			</tr>
