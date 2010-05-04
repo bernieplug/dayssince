@@ -13,5 +13,5 @@
   <msg name="average">Average</msg>
   <msg name="days">days</msg>
   <msg name="resets">resets</msg>
-  <msg name="defaultreminders">"Changed the filters","Donated unused items to charity","Watered the plants"</msg>
+  <msg name="defaultreminders">Changed the filters,Donated unused items to charity,Watered the plants</msg>
 </messagebundle>

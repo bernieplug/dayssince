@@ -13,5 +13,5 @@
   <msg name="average">Promedio</msg>
   <msg name="days">días</msg>
   <msg name="resets">restablece</msg>
-  <msg name="defaultreminders">"Te desplazas en bicicleta en lugar de ir en coche","Compartes tus libros","Reciclas"</msg>
+  <msg name="defaultreminders">Te desplazas en bicicleta en lugar de ir en coche,Compartes tus libros,Reciclas</msg>
 </messagebundle>
