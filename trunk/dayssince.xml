@@ -157,11 +157,10 @@ var daysSince__MODULE_ID__ = function () {
 	}
 	
 	function loadDefaultReminders() {
-		var json = "[__MSG_defaultreminders__]";
-		json = json.replace(/&quot;/g,'"');
+		//var defm = "__MSG_defaultreminders__";
+		var defm = gadgets.Prefs.getMsg("defaultreminders") 
+		var default_array = defm.split(',');
 		var newr = [];
-		
-		var default_array = json.parseJSON();
 		var d = new Date();
 		
 		for (var i = 0; i < default_array.length; i++) {
